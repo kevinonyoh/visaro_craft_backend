@@ -4,18 +4,22 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { StripeService } from './payment-factory/integration/stripe.service';
 import { IUser } from '../users/interfaces/user.interface';
 import { UsersService } from '../users/users.service';
-import { IPaymentIntent } from './interface/payment.interface';
+import { IPaymentIntent, IStatus } from './interface/payment.interface';
 import { PaymentOptionsRepository } from './repositories/payment-option.repository';
+import { Request, Response } from 'express';
+import { PaymentRepository } from './repositories/payment.repository';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly stripeService: StripeService,
     private readonly usersService: UsersService,
-    private readonly paymentOptionsRepository: PaymentOptionsRepository
+    private readonly paymentOptionsRepository: PaymentOptionsRepository,
+    private readonly paymentRepository: PaymentRepository
     ){}
 
-   async createPaymentIntent(user: IUser, data: CreatePaymentIntentDto){
+   async createPaymentIntent(user: IUser, data: CreatePaymentIntentDto, transaction: Transaction){
       const userData = await this.usersService.getUserByEmail(user.email);
 
       if(!userData) throw new BadRequestException("user email does not exist");
@@ -40,7 +44,26 @@ export class PaymentService {
          description: `${payment.name} payment`
       }
 
-      return this.stripeService.initiatePayment(payload);
+      const {id, client_secret} =  await this.stripeService.testInitiatePayment(payload);
 
+      const load = {
+         userId: user.id,
+         email: user.email,
+         stripeId: id,
+         stripeClientSecret: client_secret,
+         amount: paymentJson.amount,
+         serviceType: paymentJson.name
+      }
+
+      return await this.paymentRepository.create({...load}, transaction);
+
+   }
+
+   async webHookStripe(req: Request, res: Response, sig){
+      return await this.stripeService.webHook(sig, req);
+   }
+
+   async confirmPayment(paymentIntentId: string){
+       return await this.stripeService.confirmPayment(paymentIntentId);
    }
 }

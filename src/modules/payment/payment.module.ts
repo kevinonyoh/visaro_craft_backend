@@ -6,10 +6,12 @@ import { PaymentOptionsRepository } from './repositories/payment-option.reposito
 import { PaymentOptionsModel } from './models/payment-option.model';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from '../users/users.module';
+import { PaymentRepository } from './repositories/payment.repository';
+import { PaymentModel } from './models/payment.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([PaymentOptionsModel]), UsersModule],
+  imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule],
   controllers: [PaymentController],
-  providers: [PaymentService, StripeService, PaymentOptionsRepository],
+  providers: [PaymentService, StripeService, PaymentOptionsRepository, PaymentRepository],
 })
 export class PaymentModule {}
