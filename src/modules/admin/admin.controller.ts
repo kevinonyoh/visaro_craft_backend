@@ -1,0 +1,48 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { CreateAdminDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-admin.dto';
+import { UpdateAdminDto } from './dto/update-admin.dto';
+import { Public } from 'src/common/decorators/public.decorator';
+import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
+import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
+import { Transaction } from 'sequelize';
+import { IAdmin } from './interfaces/admin.interface';
+import { Admin } from 'src/common/decorators/admin.decorator';
+import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
+
+
+@IsAdmin()
+@Controller('admin')
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Post()
+  create(@Body() createAdminDto: CreateAdminDto) {
+    return this.adminService.create(createAdminDto);
+  }
+
+  @Public()
+  @Post("forget-password")
+  @HttpCode(200)
+  @ResponseMessage("check your mail verify your otp code")
+  async forgetPassword(@Body() body: ForgetPasswordDto){
+     return await this.adminService.forgotpassword(body);
+  }
+
+  @Public()
+  @Put("reset-forget-password")
+  @HttpCode(200)
+  @ResponseMessage("password reset successfully")
+  async verifyForgetPasswordOtp(@Body() body: ResetForgetPasswordDto, @TransactionParam() transaction: Transaction){
+     return await this.adminService.verifyforgotpassword(body, transaction);
+  }
+
+
+  @Get("profile")
+  @HttpCode(200)
+  @ResponseMessage("user profile")
+  async userProfile(@Admin() admin: IAdmin){
+    return await this.adminService.findAdminProfile(admin)
+  }
+ 
+}

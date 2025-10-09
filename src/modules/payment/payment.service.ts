@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreatePaymentDto, CreatePaymentIntentDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, CreatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { StripeService } from './payment-factory/integration/stripe.service';
 import { IUser } from '../users/interfaces/user.interface';
@@ -24,9 +24,9 @@ export class PaymentService {
 
       if(!userData) throw new BadRequestException("user email does not exist");
 
-      const {paymentType} = data;
+      const { paymentOptionId } = data;
 
-      const payment = await this.paymentOptionsRepository.findOne({name: paymentType})
+      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionId})
 
       if(!payment) throw new BadRequestException("payment type does not exist");
 
@@ -64,6 +64,18 @@ export class PaymentService {
    }
 
    async confirmPayment(paymentIntentId: string){
-       return await this.stripeService.confirmPayment(paymentIntentId);
+      return await this.stripeService.confirmPayment(paymentIntentId);
+   }
+
+   async createPaymentOption(data: CreatePaymentOptionDto, transaction: Transaction){
+
+      const {amount, ...rest} = data;
+
+      const payload = {
+         amount: (amount * 100),
+         ...rest
+      }
+
+      return await this.paymentOptionsRepository.create(payload, transaction);
    }
 }

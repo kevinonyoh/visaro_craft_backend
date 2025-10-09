@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ConfigService } from '@nestjs/config';
 import { IS_LOGIN_KEY } from '../decorators/login.decorator';
+import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
 
 
 
@@ -19,34 +20,52 @@ export class AuthGuard implements CanActivate {
     
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
 
-    const isLogin = this.reflector.getAllAndOverride<boolean>(IS_LOGIN_KEY, [context.getHandler(), context.getClass()]);
+    const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [context.getHandler(), context.getClass()]);
 
 
-    if (isPublic || isLogin) return true;
+    if (isPublic) return true;
 
     const request = context.switchToHttp().getRequest();
 
+    if (isAdmin) return await this.validateAdmin(request);
+
     const token = request.headers['authorization'];
-
-    // const client = request.headers['client'];
-
 
     if (!token) throw new UnauthorizedException('Valid token is required');
 
-    // if (!client) throw new UnauthorizedException('Client is required');
-
-    // if (!['user', 'admin'].includes(client)) throw new UnauthorizedException('Invalid client');
-
+  
     const _token = token.replace(/(Bearer\s|bearer\s)/, '');
     
    
-    const privateKey = process.env.PRIVATE_KEY;
+    const privateKey =this.configService.get<string>('secretKey');
      
     try {
       const decoded = await this.jwtService.verifyAsync(_token, { secret: privateKey });
    
       request.user = decoded;
       
+    } catch (err) {
+      if (/Token/.test(err.name)) throw new UnauthorizedException('Invalid token');
+      
+      throw err;
+    }
+
+    return true;
+  }
+
+  private async validateAdmin(request) {
+    const token = request.headers['authorization'];
+
+    if (!token) throw new UnauthorizedException('Valid token is required');
+
+    const _token = token.replace(/(Bearer\s|bearer\s)/, '');
+    
+    const secret = this.configService.get<string>('adminSecretKey');
+     
+    try {
+      const decoded = await this.jwtService.verifyAsync(_token, { secret });
+ 
+      request.admin = decoded;
     } catch (err) {
       if (/Token/.test(err.name)) throw new UnauthorizedException('Invalid token');
       

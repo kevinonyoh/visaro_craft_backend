@@ -10,9 +10,12 @@ import { CacheStoreModule } from './shared/cache-store/cache-store.module';
 import { EmailModule } from './shared/notification/email/email.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { PetitionModule } from './modules/petition/petition.module';
+import { AgentModule } from './modules/agent/agent.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
-  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, UsersModule, AuthModule, PaymentModule,],
+  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule,],
   controllers: [AppController],
   providers: [AppService, ...appProvider],
 })

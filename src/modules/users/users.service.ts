@@ -80,6 +80,10 @@ export class UsersService {
 
    return await this.usersRepository.update({email: user.email}, {cvUrl, cvPublicId}, transaction);
   }
+
+  async findUser(user: IUser){
+      const userdata = await this.usersRepository.findOne({email:user.email});
+  }
   
 
   async getUserByEmail(email: string){

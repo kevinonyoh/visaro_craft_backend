@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { IPaymentType } from "../interface/payment.interface";
 
 
@@ -6,7 +6,17 @@ export class CreatePaymentDto{}
 
 
 export class CreatePaymentIntentDto{
-    @IsEnum(IPaymentType)
+    @IsNumber()
     @IsNotEmpty()
-    paymentType: IPaymentType;
+    paymentOptionId: number;
+}
+
+export class CreatePaymentOptionDto{
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    amount: number;
 }

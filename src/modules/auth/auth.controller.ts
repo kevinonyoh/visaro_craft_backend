@@ -14,6 +14,14 @@ export class AuthController {
   @ResponseMessage('Logged in successfully')
   @HttpCode(200)
   async login(@Body() body: LoginDto) {
-    return await this.authService.login(body);
+    return await this.authService.userLogin(body);
+  }
+
+  @Public()
+  @Post('admin-login')
+  @ResponseMessage("logged in successfully")
+  @HttpCode(200)
+  async adminLogin(@Body() body: LoginDto) {
+     return await this.authService.adminLogin(body);
   }
 }

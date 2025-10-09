@@ -2,46 +2,47 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable("payment_options", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('payment_options', {
       id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false,
       },
 
       name: {
-        type: Sequelize.ENUM('consultation', 'first_installment', 'second_installment'),
-        allowNull: false,
+        type: Sequelize.STRING,
         unique: true,
+        allowNull: false,
       },
 
       amount: {
-        type: Sequelize.INTEGER, 
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
 
       currency: {
         type: Sequelize.STRING,
+        allowNull: true,
         defaultValue: 'usd',
-        allowNull: false,
       },
 
       created_at: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: Sequelize.fn('NOW'),
       },
-    
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
 
-    })
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
+    });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('payment_options');
-  }
+  },
 };

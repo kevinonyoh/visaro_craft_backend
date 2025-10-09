@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Req, Res, Headers } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto, CreatePaymentIntentDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, CreatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { IUser } from '../users/interfaces/user.interface';
@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { Public } from 'src/common/decorators/public.decorator';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
+import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
 
 @Controller('payment')
 export class PaymentController {
@@ -25,7 +26,7 @@ export class PaymentController {
   @Post("webHook")
   @HttpCode(200)
   @ResponseMessage("webhook")
-  async webHookStripe( @Req() req: Request, @Res() res: Response, @Headers('stripe-signature') sig: string){
+  async webHookStripe(@Req() req: Request, @Res() res: Response, @Headers('stripe-signature') sig: string){
       return await this.paymentService.webHookStripe(req, res, sig);
   }
 
@@ -34,6 +35,14 @@ export class PaymentController {
   @ResponseMessage("payment successfull")
   async confirmStripPayment(@Param("paymentIntentId") paymentIntentId: string){
       return await this.paymentService.confirmPayment(paymentIntentId);
+  }
+
+  @IsAdmin()
+  @Post("create-payment-option")
+  @HttpCode(201)
+  @ResponseMessage("payment option created successfully")
+  async createPaymentOption(@Body() body: CreatePaymentOptionDto, @TransactionParam() transaction: Transaction){
+     return await this.paymentService.createPaymentOption(body, transaction);
   }
 
  }

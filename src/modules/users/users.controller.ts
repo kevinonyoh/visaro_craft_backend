@@ -39,6 +39,13 @@ export class UsersController {
      return await this.usersService.verifyforgotpassword(body, transaction);
   }
 
+  @Get("user-profile")
+  @HttpCode(200)
+  @ResponseMessage("user profile")
+  async userProfile(@User() user: IUser){
+    return await this.usersService.findUser(user)
+  }
+
   @Put("upload-cv")
   @HttpCode(200)
   @ResponseMessage("cv uploaded successfully")
