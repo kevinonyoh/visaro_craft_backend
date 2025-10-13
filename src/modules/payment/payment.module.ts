@@ -13,5 +13,6 @@ import { PaymentModel } from './models/payment.model';
   imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule],
   controllers: [PaymentController],
   providers: [PaymentService, StripeService, PaymentOptionsRepository, PaymentRepository],
+  exports: [PaymentService]
 })
 export class PaymentModule {}

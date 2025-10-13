@@ -32,4 +32,8 @@ export class PetitionModel extends Model<PetitionModel>{
     @AllowNull
     @Column(DataType.ENUM(IPetitionTimeline.REVIEW, IPetitionTimeline.COVER_LETTER_AND_CRITERIA_MET, IPetitionTimeline.US_BENEFIT_AND_ENDEAVOR, IPetitionTimeline.FINAL_MERIT_AND_CONCLUSION, IPetitionTimeline.EXHIBITA_AND_FINAL_REVIEW))
     petitionTimeline: IPetitionTimeline;
+
+    @AllowNull
+    @Column(DataType.BOOLEAN)
+    isPetitionActivated: boolean;
 }

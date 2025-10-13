@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Req, Res, Headers } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto, CreatePaymentIntentDto, CreatePaymentOptionDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { IUser } from '../users/interfaces/user.interface';
@@ -10,6 +10,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
+import { IsLogin } from 'src/common/decorators/login.decorator';
 
 @Controller('payment')
 export class PaymentController {
@@ -37,12 +38,22 @@ export class PaymentController {
       return await this.paymentService.confirmPayment(paymentIntentId);
   }
 
+
   @IsAdmin()
-  @Post("create-payment-option")
-  @HttpCode(201)
-  @ResponseMessage("payment option created successfully")
-  async createPaymentOption(@Body() body: CreatePaymentOptionDto, @TransactionParam() transaction: Transaction){
-     return await this.paymentService.createPaymentOption(body, transaction);
+  @Post("update-payment-option/:id")
+  @HttpCode(200)
+  @ResponseMessage("payment option updated successfully")
+  async updatePaymentOption(@Param("id") id:string, @Body() body: UpdatePaymentOptionDto, @TransactionParam() transaction: Transaction){
+     return await this.paymentService.updatePaymentOption(id, body, transaction);
+  }
+
+
+  @IsLogin()
+  @Get("view-payment-option")
+  @HttpCode(200)
+  @ResponseMessage("payment options")
+  async getPaymentOptions(){
+     return await this.paymentService.findPaymentOptions();
   }
 
  }

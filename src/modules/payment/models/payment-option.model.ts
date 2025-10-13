@@ -1,4 +1,5 @@
-import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { IPaymentType } from "../interface/payment.interface";
 
 @Table({
     tableName: "payment_options",
@@ -8,20 +9,20 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, U
 })
 export class PaymentOptionsModel extends Model<PaymentOptionsModel>{
     @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER)
-    id: number;
+    @Default(DataType.UUIDV4)
+    @Column(DataType.UUID)
+    id: string;
 
     @Unique
     @AllowNull(false)
-    @Column(DataType.STRING)
-    name: string;
+    @Column(DataType.ENUM(IPaymentType.CONSULTATION, IPaymentType.PETITION_PREPARATION, IPaymentType.REVIEW_PETITION))
+    name: IPaymentType;
 
     @AllowNull(false)
     @Column(DataType.INTEGER)
     amount: number;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column({
         type: DataType.STRING,
         defaultValue: 'usd',

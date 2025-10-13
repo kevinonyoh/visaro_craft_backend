@@ -12,8 +12,19 @@ module.exports = {
     },
 
     user_id: {
-      type: Sequelize.STRING(128),
-      allowNull: false
+      type: Sequelize.UUID,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+
+    payment_option_name: {
+      type: Sequelize.ENUM("CONSULTATION", "PETITION_PREPARATION", "REVIEW_PETITION"),
+      allowNull: false,
     },
 
     email: {
@@ -29,6 +40,28 @@ module.exports = {
     stripe_client_secret: {
       type: Sequelize.STRING(128),
       allowNull: true
+    },
+
+    petition_id: {
+      type: Sequelize.UUID,
+      allowNull: false,
+      references: {
+        model: 'petitions',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+
+    payment_options_id: {
+      type: Sequelize.UUID,
+      allowNull: false,
+      references: {
+        model: 'payment_options',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
 
     amount : {
@@ -49,7 +82,7 @@ module.exports = {
     updated_at: {
       allowNull: false,
       type: Sequelize.DATE
-    }
+    },
 
    })
   },

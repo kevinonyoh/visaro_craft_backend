@@ -1,6 +1,8 @@
 import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { UsersModel } from "src/modules/users/models/users.model";
-import { IStatus } from "../interface/payment.interface";
+import { IPaymentType, IStatus } from "../interface/payment.interface";
+import { PetitionModel } from "src/modules/petition/model/petition.model";
+import { PaymentOptionsModel } from "./payment-option.model";
 
 
 
@@ -21,6 +23,21 @@ export class PaymentModel extends Model<PaymentModel>{
     @AllowNull(false)
     @Column(DataType.STRING(128))
     userId!: string;
+
+    @ForeignKey(() => PetitionModel)
+    @AllowNull(false)
+    @Column(DataType.STRING(128))
+    petitionId!: string;
+
+    @AllowNull(false)
+    @Column(DataType.ENUM(IPaymentType.CONSULTATION, IPaymentType.PETITION_PREPARATION, IPaymentType.REVIEW_PETITION))
+    paymentOptionName: IPaymentType;
+
+    @ForeignKey(() => PaymentOptionsModel)
+    @AllowNull(false)
+    @Column(DataType.STRING(128))
+    paymentOptionsId!: string;
+
 
     @BelongsTo(() => UsersModel)
     user!: UsersModel;
@@ -44,10 +61,4 @@ export class PaymentModel extends Model<PaymentModel>{
     @Default(IStatus.PENDING)
     @Column(DataType.ENUM(IStatus.FAILED, IStatus.PENDING, IStatus.SUCCESSFUL))
     status!:IStatus;
-
-    @AllowNull(false) 
-    @Column(DataType.STRING)
-    serviceType: string;
-
-
 }

@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { PetitionService } from './petition.service';
-import { CreatePetitionDto, UpdatePetitionStatusDto } from './dto/create-petition.dto';
+import { CreatePetitionDto, DocumentsDto, QueryPetitionDto, UpdatePetitionStatusDto, UpdatePetitionTimelineDto } from './dto/create-petition.dto';
 import { UpdatePetitionDto } from './dto/update-petition.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { IUser } from '../users/interfaces/user.interface';
@@ -21,11 +21,57 @@ export class PetitionController {
   }
 
   @IsAdmin()
-  @Put("update-petition/:id")
+  @Put("update-petition-status/:id")
   @HttpCode(200)
   @ResponseMessage("petition status updated successfully")
   async updatePetitionStatus(@Param("id") id: string, @Body() body: UpdatePetitionStatusDto, @TransactionParam() transaction: Transaction){
      return await this.petitionService.updatePetitionStatus(id, body, transaction);
   }
  
+  @Get("user-petition/:id")
+  @HttpCode(200)
+  @ResponseMessage("User petition")
+  async getUserPetition(@User() user: IUser, @Param("id") id: string){
+      return await this.petitionService.findUserPetition(user, id);
+  }
+
+
+  @IsAdmin()
+  @Get("view-petition/:id")
+  @HttpCode(200)
+  @ResponseMessage("User petition")
+  async viewPetition(@Param("id") id: string){
+      return await this.petitionService.findPetition(id);
+  }
+
+  @IsAdmin()
+  @Get("all")
+  @HttpCode(200)
+  @ResponseMessage("User petition")
+  async getAllPetition(@Query() query: QueryPetitionDto){
+      return await this.petitionService.findAllPetition(query);
+  }
+
+  @Post("upload-document")
+  @HttpCode(200)
+  @ResponseMessage("document upload successfully")
+  async uploadDocument(@User() user: IUser, @Body() body: DocumentsDto, @TransactionParam() transaction: Transaction){
+      return await this.petitionService.uploadDocument(user, body, transaction);
+  }
+
+  @Put("activate-petition/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("petition activated successfully")
+  async activatePetition(@User() user: IUser, @Param("petitionId") petitionId: string, @TransactionParam() transaction: Transaction){
+      return await this.petitionService.activatePetition(user, petitionId, transaction);
+  }
+
+  @IsAdmin()
+  @Put("update-petition-timeline/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("petition timeline update successfully")
+  async updatePetitionTimeline(@Param("petitionId") id: string, @Body() body: UpdatePetitionTimelineDto, @TransactionParam() transaction: Transaction){
+      return await this.petitionService.updatePetitionTimeline(id, body, transaction);
+  }
+
 }

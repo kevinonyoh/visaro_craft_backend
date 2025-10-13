@@ -22,10 +22,15 @@ export class AuthGuard implements CanActivate {
 
     const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [context.getHandler(), context.getClass()]);
 
+    const isLogin = this.reflector.getAllAndOverride<boolean>(IS_LOGIN_KEY, [context.getHandler(), context.getClass()]);
+    
+
 
     if (isPublic) return true;
 
     const request = context.switchToHttp().getRequest();
+
+    if (isLogin) return await this.validateAnyLogin(request);
 
     if (isAdmin) return await this.validateAdmin(request);
 
@@ -74,4 +79,30 @@ export class AuthGuard implements CanActivate {
 
     return true;
   }
+
+
+  private async validateAnyLogin(request) {
+    const token = request.headers['authorization'];
+    if (!token) throw new UnauthorizedException('Valid token is required');
+  
+    const _token = token.replace(/(Bearer\s|bearer\s)/, '');
+  
+    const userSecret = this.configService.get<string>('secretKey');
+    const adminSecret = this.configService.get<string>('adminSecretKey');
+  
+    try {
+      const decodedUser = await this.jwtService.verifyAsync(_token, { secret: userSecret });
+      request.user = decodedUser;
+      return true;
+    } catch (userErr) {
+      try {
+        const decodedAdmin = await this.jwtService.verifyAsync(_token, { secret: adminSecret });
+        request.admin = decodedAdmin;
+        return true;
+      } catch (adminErr) {
+        throw new UnauthorizedException('Invalid token');
+      }
+    }
+  }
+  
 }

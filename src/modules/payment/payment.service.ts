@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreatePaymentDto, CreatePaymentIntentDto, CreatePaymentOptionDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { StripeService } from './payment-factory/integration/stripe.service';
 import { IUser } from '../users/interfaces/user.interface';
 import { UsersService } from '../users/users.service';
-import { IPaymentIntent, IStatus } from './interface/payment.interface';
+import { IFindPayment, IPaymentIntent, IStatus } from './interface/payment.interface';
 import { PaymentOptionsRepository } from './repositories/payment-option.repository';
 import { Request, Response } from 'express';
 import { PaymentRepository } from './repositories/payment.repository';
@@ -24,9 +24,9 @@ export class PaymentService {
 
       if(!userData) throw new BadRequestException("user email does not exist");
 
-      const { paymentOptionId } = data;
+      const { petitionId, paymentOptionName, paymentOptionsId } = data;
 
-      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionId})
+      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
       if(!payment) throw new BadRequestException("payment type does not exist");
 
@@ -52,7 +52,9 @@ export class PaymentService {
          stripeId: id,
          stripeClientSecret: client_secret,
          amount: paymentJson.amount,
-         serviceType: paymentJson.name
+         paymentOptionName: paymentJson.name,
+         petitionId,
+         paymentOptionsId
       }
 
       return await this.paymentRepository.create({...load}, transaction);
@@ -67,8 +69,7 @@ export class PaymentService {
       return await this.stripeService.confirmPayment(paymentIntentId);
    }
 
-   async createPaymentOption(data: CreatePaymentOptionDto, transaction: Transaction){
-
+   async updatePaymentOption(id: string, data: UpdatePaymentOptionDto, transaction: Transaction){
       const {amount, ...rest} = data;
 
       const payload = {
@@ -76,6 +77,14 @@ export class PaymentService {
          ...rest
       }
 
-      return await this.paymentOptionsRepository.create(payload, transaction);
+      return await this.paymentOptionsRepository.update({id}, payload, transaction);
+   }
+
+   async  findPaymentOptions(){
+      return await this.paymentOptionsRepository.findAll({});
+   }
+
+   async findSuccessfulPayment(data: IFindPayment){
+       return await this.paymentRepository.findOne({...data, status: IStatus.SUCCESSFUL})
    }
 }

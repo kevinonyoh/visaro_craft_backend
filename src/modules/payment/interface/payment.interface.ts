@@ -1,8 +1,9 @@
 export enum IPaymentType{
-  CONSULTATION = "consultation",
-  FIRST_INSTALLMENT = "first_installment",
-  SECOND_INSTALLMENT = "second_installment"
+  CONSULTATION = "CONSULTATION",
+  PETITION_PREPARATION = "PETITION_PREPARATION",
+  REVIEW_PETITION = "REVIEW_PETITION"
 }
+
 
 export enum IStatus{
   PENDING = 'pending',
@@ -21,4 +22,13 @@ export interface IPaymentIntent{
   receipt_email: string;
   payment_method_types?: string[]; 
   payment_method?: string; 
+}
+
+export interface IFindPayment{
+  userId: string;
+  petitionId: string;
+  paymentOptionName: IPaymentType;
+  PaymentOptionsId?: string;
+  email?: string;
+  stripeId?: string; 
 }
