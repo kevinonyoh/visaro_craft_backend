@@ -24,7 +24,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  await app.listen(port, () => console.log(`App running on port ${port}`));
+  await app.listen(port, '0.0.0.0', () => console.log(`App running on port ${port}`));
 
 }
 bootstrap();
