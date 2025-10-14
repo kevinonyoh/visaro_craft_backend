@@ -61,7 +61,7 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
 
     const result = await this.paymentService.findSuccessfulPayment(payload);
 
-    // if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
+    if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
     return await this.documentRepository.create({petitionId, uploadedBy: user.id, ...rest}, transaction);
 }
@@ -75,9 +75,10 @@ async activatePetition(user: IUser, petitionId: string, transaction:Transaction)
 
     const result = await this.paymentService.findSuccessfulPayment(payload);
 
-    if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
+   if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
-    return await this.petitonRepository.update({userId: user.id, id: petitionId}, {isPetitionActivated: true}, transaction);
+  return await this.petitonRepository.update({id: petitionId, userId: user.id}, {isPetitionActivated: true}, transaction);
+
 }
 
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
@@ -86,8 +87,10 @@ async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transa
 
     const petitionJson = petition.toJSON();
 
-    if(!petitionJson.isPetitionActivated) throw new BadRequestException("Petition is yet to be activated by this user")
+    return petition;
+
+    // if(!petitionJson.isPetitionActivated) throw new BadRequestException("Petition is yet to be activated by this user")
     
-    return await this.petitonRepository.update({id}, {petitionTimeline}, transaction);
+    // return await this.petitonRepository.update({id}, {petitionTimeline}, transaction);
   }
 }

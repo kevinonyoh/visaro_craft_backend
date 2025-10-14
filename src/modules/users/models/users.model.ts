@@ -8,7 +8,6 @@ import { ExcludeFieldsFromJSON } from "src/common/utils/helper";
     underscored: true,
     freezeTableName: true
 })
-@ExcludeFieldsFromJSON(['password'])
 export class UsersModel extends Model<UsersModel>{
  
     @PrimaryKey
@@ -48,4 +47,12 @@ export class UsersModel extends Model<UsersModel>{
     @AllowNull(true)
     @Column
     cvPublicId: string;
+
+    toJSON() {
+        const data = Object.assign({}, this.get())
+
+        const { password, deletedAt, ...rest } = data;
+
+        return rest;
+    }
 }    

@@ -8,7 +8,6 @@ import { ExcludeFieldsFromJSON } from "src/common/utils/helper";
     underscored: true,
     freezeTableName: true
 })
-@ExcludeFieldsFromJSON(['password'])
 export class AdminModel extends Model<AdminModel>{
  
     @PrimaryKey
@@ -40,4 +39,12 @@ export class AdminModel extends Model<AdminModel>{
     @Default(false)
     @Column(DataType.BOOLEAN)
     isActivated!: boolean;
+
+    toJSON() {
+        const data = Object.assign({}, this.get())
+
+        const { password, deletedAt, ...rest } = data;
+
+        return rest;
+    }
 }    
