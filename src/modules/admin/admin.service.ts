@@ -31,12 +31,12 @@ export class AdminService {
     const userData = user.toJSON();
  
     const otp = helpers.generateOtp();
-
-    console.log("otp here >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", otp);
  
     await this.cacheStoreService.set(otp, email);
+
+    return {otp}
  
-    await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
+    // await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
    }
  
    async verifyforgotpassword(data: ResetForgetPasswordDto, transaction: Transaction){

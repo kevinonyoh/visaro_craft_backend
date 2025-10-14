@@ -40,7 +40,7 @@ export class UsersService {
 
      const userData = val.toJSON();
 
-    await this.emailService.signUp({email, firstName});
+    // await this.emailService.signUp({email, firstName});
 
     return userData;
   }
@@ -58,7 +58,9 @@ export class UsersService {
 
    await this.cacheStoreService.set(otp, email);
 
-   await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
+     return {otp}
+
+    // await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
   }
 
   async verifyforgotpassword(data: ResetForgetPasswordDto, transaction: Transaction){
