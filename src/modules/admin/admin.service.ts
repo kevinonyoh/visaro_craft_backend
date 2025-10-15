@@ -33,10 +33,8 @@ export class AdminService {
     const otp = helpers.generateOtp();
  
     await this.cacheStoreService.set(otp, email);
-
-    return {otp}
  
-    // await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
+    await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
    }
  
    async verifyforgotpassword(data: ResetForgetPasswordDto, transaction: Transaction){
