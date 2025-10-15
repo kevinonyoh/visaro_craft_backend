@@ -48,6 +48,14 @@ export class UsersModel extends Model<UsersModel>{
     @Column
     cvPublicId: string;
 
+    @AllowNull(true)
+    @Column
+    phoneNumber: string;
+
+    @AllowNull(true)
+    @Column
+    countryCode: string;
+
     toJSON() {
         const data = Object.assign({}, this.get())
 

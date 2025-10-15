@@ -18,6 +18,13 @@ export class CreateUserDto {
     @IsNotEmpty()
     password: string;
 
+    @IsString()
+    @IsNotEmpty()
+    phoneNumber: string;
+
+    @IsString()
+    @IsNotEmpty()
+    countryCode: string;
 }
 
 
