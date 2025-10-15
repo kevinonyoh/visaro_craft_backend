@@ -84,7 +84,9 @@ export class UsersService {
   async findUser(user: IUser){
       const userdata = await this.usersRepository.findOne({email:user.email});
 
-      const userDataJson = userdata.toJSON()
+      const userDataJson = userdata.toJSON();
+
+      return userDataJson;
   }
   
 
