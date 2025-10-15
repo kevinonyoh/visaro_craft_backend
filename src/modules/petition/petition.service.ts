@@ -38,8 +38,8 @@ export class PetitionService {
     return await this.petitonRepository.update({id}, {petitionStatus}, transaction);
   }
 
-  async findUserPetition(user: IUser, id: string){
-     return await this.petitonRepository.findOne({userId: user.id, id});
+  async findUserPetition(user: IUser){
+     return await this.petitonRepository.findOne({userId: user.id});
   }
 
   async findPetition(id: string){

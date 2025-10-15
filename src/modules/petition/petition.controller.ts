@@ -28,11 +28,11 @@ export class PetitionController {
      return await this.petitionService.updatePetitionStatus(id, body, transaction);
   }
  
-  @Get("user-petition/:id")
+  @Get("user-petition")
   @HttpCode(200)
   @ResponseMessage("User petition")
-  async getUserPetition(@User() user: IUser, @Param("id") id: string){
-      return await this.petitionService.findUserPetition(user, id);
+  async getUserPetition(@User() user: IUser){
+      return await this.petitionService.findUserPetition(user);
   }
 
 
