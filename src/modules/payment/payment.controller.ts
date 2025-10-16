@@ -31,12 +31,15 @@ export class PaymentController {
       return await this.paymentService.webHookStripe(req, res, sig);
   }
 
-  @Get("confirm-payment/:paymentIntentId")
+
+  @IsLogin()
+  @Get("/:checkoutSessionId")
   @HttpCode(200)
-  @ResponseMessage("payment successfull")
-  async confirmStripPayment(@Param("paymentIntentId") paymentIntentId: string){
-      return await this.paymentService.confirmPayment(paymentIntentId);
+  @ResponseMessage("payment confirmation")
+  async confirmPayment(@Param("checkoutSessionId") checkoutSessionId: string, @TransactionParam() transaction: Transaction){
+     return await this.confirmPayment(checkoutSessionId, transaction);
   }
+
 
 
   @IsAdmin()

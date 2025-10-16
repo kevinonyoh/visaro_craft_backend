@@ -24,7 +24,7 @@ export class PaymentService {
 
       if(!userData) throw new BadRequestException("user email does not exist");
 
-      const { petitionId, paymentOptionName, paymentOptionsId } = data;
+      const { petitionId,paymentOptionsId } = data;
 
       const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
@@ -32,32 +32,37 @@ export class PaymentService {
 
       const paymentJson = payment.toJSON();
 
-      const payload: IPaymentIntent = {
-         amount: paymentJson.amount,
-         currency: paymentJson.currency,
-         metadata: {
-          paymentType: payment.name,
-          userId: user.id
-         },
-         receipt_email: user.email,
+      const payload = {
          payment_method_types: ['card'],
-         description: `${payment.name} payment`
-      }
+         mode: 'payment',
+         line_items: [
+           {
+             price_data: {
+               currency: 'usd',
+               product_data: { name: paymentJson.name },
+               unit_amount: paymentJson.amount,
+             },
+             quantity: 1,
+           },
+         ],
+         success_url: 'http://localhost:5003/api/v1/payment/confirmation?successful',
+         cancel_url: 'http://localhost:5003/api/v1/payment/confirmation?failed',
+       }
 
-      const {id, client_secret} =  await this.stripeService.testInitiatePayment(payload);
+     const stripeData = await this.stripeService.testInitiatePayment(payload);
 
       const load = {
          userId: user.id,
          email: user.email,
-         stripeId: id,
-         stripeClientSecret: client_secret,
+         checkoutSessionId: stripeData.id,
+         paymentUrl: stripeData.url,
          amount: paymentJson.amount,
          paymentOptionName: paymentJson.name,
          petitionId,
          paymentOptionsId
       }
 
-      return await this.paymentRepository.create({...load}, transaction);
+       return await this.paymentRepository.create({...load}, transaction);
 
    }
 
@@ -65,8 +70,8 @@ export class PaymentService {
       return await this.stripeService.webHook(sig, req);
    }
 
-   async confirmPayment(paymentIntentId: string){
-      return await this.stripeService.confirmPayment(paymentIntentId);
+   async confirmPayment(checkoutSessionId: string, transaction: Transaction){
+       return await this.stripeService.verifyPayment(checkoutSessionId, transaction);
    }
 
    async updatePaymentOption(id: string, data: UpdatePaymentOptionDto, transaction: Transaction){

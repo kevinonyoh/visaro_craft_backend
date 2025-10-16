@@ -48,11 +48,11 @@ export class PaymentModel extends Model<PaymentModel>{
 
     @AllowNull(false)
     @Column(DataType.STRING(128))
-    stripeId?: string;
+    checkoutSessionId?: string;
 
     @AllowNull(false)
-    @Column(DataType.STRING(128))
-    stripeClientSecret?: string;
+    @Column(DataType.STRING(255))
+    paymentUrl?: string;
 
     @AllowNull(false)
     @Column(DataType.INTEGER)

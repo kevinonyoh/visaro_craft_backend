@@ -4,7 +4,7 @@ import { IPaymentIntent, IStatus } from "../../interface/payment.interface";
 import { Request } from "express";
 import { Transaction } from "sequelize";
 import { PaymentRepository } from "../../repositories/payment.repository";
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 
 
 @Injectable()
@@ -23,7 +23,7 @@ export class StripeService{
     }
       
     async testInitiatePayment(data){
-       return await this.stripe.paymentIntents.create({...data});
+       return await this.stripe.checkout.sessions.create({...data})
     }
 
     async webHook(sig, req: Request){
@@ -34,43 +34,82 @@ export class StripeService{
         )
 
         switch (event.type) {
-            case 'payment_intent.succeeded':
-              const paymentIntent = event.data.object as Stripe.PaymentIntent;
-
-               const data = await this.paymentRepository.update({stripeId: paymentIntent.id}, {status: IStatus.SUCCESSFUL})
-
-              this.logger.debug(`=========================================Payment was successful!=================================`, data);
-              break;
-      
-            case 'payment_intent.payment_failed':
-              const failedIntent = event.data.object as Stripe.PaymentIntent;
-
-               const val = await this.paymentRepository.update({stripeId: failedIntent.id}, {status: IStatus.FAILED})
-
-              this.logger.log('=========================================Payment failed! ========================================', val);
-              break;
-
-            case 'payment_intent.created':
-              const createIntent = event.data.object as Stripe.PaymentIntent;
-
-              this.logger.log('========================================Payment Intent created successfully! =========================', createIntent);
-              break;
-
-            default:
-              this.logger.error(`Unhandled event type ${event.type}`);
+          case 'checkout.session.completed': {
+            const session = event.data.object as Stripe.Checkout.Session;
+        
+            await this.paymentRepository.update(
+              { status: IStatus.SUCCESSFUL },
+               { checkoutSessionId: session.id},
+            );
+        
+            this.logger.log(
+              '========================================= Checkout session completed! Payment successful =========================================',
+              session.id,
+            );
+            break;
           }
+        
+          case 'checkout.session.async_payment_failed':
+          case 'checkout.session.expired': {
+            const session = event.data.object as Stripe.Checkout.Session;
+        
+            await this.paymentRepository.update({ status: IStatus.FAILED }, { checkoutSessionId: session.id });
+        
+            this.logger.warn(
+              '========================================= Checkout session failed or expired =========================================',
+              session.id,
+            );
+            break;
+          }
+        
+          case 'checkout.session.async_payment_succeeded': {
+            const session = event.data.object as Stripe.Checkout.Session;
+        
+            await this.paymentRepository.update({ status: IStatus.SUCCESSFUL },{ checkoutSessionId: session.id });
+        
+            this.logger.log(
+              '========================================= Async checkout payment succeeded =========================================',
+              session.id,
+            );
+            break;
+          }
+        
+          default:
+            this.logger.error(`⚠️ Unhandled event type: ${event.type}`);
+            break;
+        }        
+     
     }
 
-    async confirmPayment(paymentIntentId: string){
-      const {status} = await this.stripe.paymentIntents.retrieve(paymentIntentId);
-
-      if(status === "succeeded") {
-       this.logger.debug(`=========================================Payment was successful!=================================`);    
+    async verifyPayment(sessionId: string, transaction: Transaction) {
     
-         return await this.paymentRepository.update({stripeId: paymentIntentId}, {status: IStatus.SUCCESSFUL});
+      const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+  
+      
+      const payment = await this.paymentRepository.findOne({ checkoutSessionId: sessionId });
+  
+      if (!payment) {
+        throw new BadRequestException('Payment record not found');
       }
+  
+      // Determine new status based on Stripe session
+      let newStatus: IStatus;
+  
+      switch (session.payment_status) {
+        case 'paid':
+          newStatus = IStatus.SUCCESSFUL;
+          break;
+        case 'unpaid':
+          newStatus = IStatus.FAILED;
+          break;
+        case 'no_payment_required':
+        default:
+            newStatus = IStatus.PENDING;
+            break;
+      }
+  
+     return await this.paymentRepository.update({ checkoutSessionId: sessionId }, {status: newStatus}, transaction);
 
-        throw new BadRequestException("Payment failed. A valid payment method is required or the transaction was declined.")
-     }
+    }
 }
 
