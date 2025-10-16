@@ -12,14 +12,14 @@ dotenv.config();
 
 async function bootstrap() {
 
-  const httpsOptions = {
-    key: fs.readFileSync('/etc/ssl/private/server.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/server.crt'),
-  };
+  // const httpsOptions = {
+  //   key: fs.readFileSync('/etc/ssl/private/server.key'),
+  //   cert: fs.readFileSync('/etc/ssl/certs/server.crt'),
+  // };
 
   const app = await NestFactory.create(AppModule, {cors: true});
 
-  https.createServer(httpsOptions, app.getHttpAdapter().getInstance()).listen(5003);
+  // https.createServer(httpsOptions, app.getHttpAdapter().getInstance()).listen(5003);
 
 
   const port = process.env.PORT || 5003;
