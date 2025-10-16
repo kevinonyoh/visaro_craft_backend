@@ -37,7 +37,7 @@ export class PaymentController {
   @HttpCode(200)
   @ResponseMessage("payment confirmation")
   async confirmPayment(@Param("checkoutSessionId") checkoutSessionId: string, @TransactionParam() transaction: Transaction){
-     return await this.confirmPayment(checkoutSessionId, transaction);
+     return await this.paymentService.confirmPayment(checkoutSessionId, transaction);
   }
 
 
