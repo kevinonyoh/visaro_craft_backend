@@ -26,7 +26,6 @@ export interface IPaymentIntent{
 
 export interface IFindPayment{
   userId: string;
-  petitionId: string;
   paymentOptionName: IPaymentType;
   PaymentOptionsId?: string;
   email?: string;

@@ -9,12 +9,14 @@ import { PaymentOptionsRepository } from './repositories/payment-option.reposito
 import { Request, Response } from 'express';
 import { PaymentRepository } from './repositories/payment.repository';
 import { Transaction } from 'sequelize';
+import { PetitionService } from '../petition/petition.service';
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly stripeService: StripeService,
     private readonly usersService: UsersService,
+    private readonly petitionService: PetitionService,
     private readonly paymentOptionsRepository: PaymentOptionsRepository,
     private readonly paymentRepository: PaymentRepository
     ){}
@@ -24,7 +26,11 @@ export class PaymentService {
 
       if(!userData) throw new BadRequestException("user email does not exist");
 
-      const { petitionId,paymentOptionsId } = data;
+      const { paymentOptionsId } = data;
+
+      const petition = await this.petitionService.findUserPetition(user);
+
+      const petitionJson = petition.toJSON();
 
       const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
@@ -58,12 +64,11 @@ export class PaymentService {
          paymentUrl: stripeData.url,
          amount: paymentJson.amount,
          paymentOptionName: paymentJson.name,
-         petitionId,
+         petitionId: petitionJson.id,
          paymentOptionsId
       }
 
        return await this.paymentRepository.create({...load}, transaction);
-
    }
 
    async webHookStripe(req: Request, res: Response, sig){

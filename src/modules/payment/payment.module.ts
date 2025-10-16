@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { StripeService } from './payment-factory/integration/stripe.service';
@@ -8,9 +8,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from '../users/users.module';
 import { PaymentRepository } from './repositories/payment.repository';
 import { PaymentModel } from './models/payment.model';
+import { PetitionModule } from '../petition/petition.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule],
+  imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule, forwardRef(() => PetitionModule)],
   controllers: [PaymentController],
   providers: [PaymentService, StripeService, PaymentOptionsRepository, PaymentRepository],
   exports: [PaymentService]

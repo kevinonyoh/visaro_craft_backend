@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreatePetitionDto, DocumentsDto, QueryPetitionDto, UpdatePetitionStatusDto, UpdatePetitionTimelineDto } from './dto/create-petition.dto';
 import { UpdatePetitionDto } from './dto/update-petition.dto';
 import { IUser } from '../users/interfaces/user.interface';
@@ -13,6 +13,7 @@ export class PetitionService {
 
   constructor(
     private readonly petitonRepository: PetitionRepository,
+    @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService,
     private readonly documentRepository: DocumentRepository
     ){}
@@ -55,7 +56,6 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
 
     const payload: IFindPayment = {
       userId: user.id,
-      petitionId,
       paymentOptionName: IPaymentType.PETITION_PREPARATION
     }
 
@@ -69,7 +69,6 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
 async activatePetition(user: IUser, petitionId: string, transaction:Transaction){
     const payload: IFindPayment = {
       userId: user.id,
-      petitionId,
       paymentOptionName: IPaymentType.PETITION_PREPARATION
     }
 
@@ -87,10 +86,8 @@ async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transa
 
     const petitionJson = petition.toJSON();
 
-    return petition;
-
-    // if(!petitionJson.isPetitionActivated) throw new BadRequestException("Petition is yet to be activated by this user")
+    if(!petitionJson.isPetitionActivated) throw new BadRequestException("Petition is yet to be activated by this user")
     
-    // return await this.petitonRepository.update({id}, {petitionTimeline}, transaction);
+    return await this.petitonRepository.update({id}, {petitionTimeline}, transaction);
   }
 }

@@ -9,14 +9,6 @@ export class CreatePaymentDto{}
 export class CreatePaymentIntentDto{
    @IsString()
    @IsNotEmpty()
-   petitionId: string;
-
-   @IsEnum(IPaymentType)
-   @IsNotEmpty()
-   paymentOptionName: IPaymentType;
-
-   @IsString()
-   @IsNotEmpty()
    paymentOptionsId: string;
 }
 
