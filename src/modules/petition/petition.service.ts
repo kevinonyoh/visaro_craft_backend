@@ -72,7 +72,7 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
     return await this.documentRepository.create({petitionId: petitionDataJson.id, uploadedBy: user.id, ...data}, transaction);
 }
 
-async activatePetition(user: IUser, petitionId: string, transaction:Transaction){
+async activatePetition(user: IUser, transaction:Transaction){
     const payload: IFindPayment = {
       userId: user.id,
       paymentOptionName: IPaymentType.PETITION_PREPARATION
@@ -82,7 +82,7 @@ async activatePetition(user: IUser, petitionId: string, transaction:Transaction)
 
    if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
-  return await this.petitonRepository.update({id: petitionId, userId: user.id}, {isPetitionActivated: true}, transaction);
+  return await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
 
 }
 

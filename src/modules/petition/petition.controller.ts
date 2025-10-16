@@ -59,11 +59,11 @@ export class PetitionController {
       return await this.petitionService.uploadDocument(user, body, transaction);
   }
 
-  @Put("activate-petition/:petitionId")
+  @Put("activate-petition")
   @HttpCode(200)
   @ResponseMessage("petition activated successfully")
-  async activatePetition(@User() user: IUser, @Param("petitionId") petitionId: string, @TransactionParam() transaction: Transaction){
-      return await this.petitionService.activatePetition(user, petitionId, transaction);
+  async activatePetition(@User() user: IUser, @TransactionParam() transaction: Transaction){
+      return await this.petitionService.activatePetition(user, transaction);
   }
 
   @IsAdmin()
