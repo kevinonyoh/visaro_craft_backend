@@ -70,7 +70,7 @@ export class PaymentController {
   @Get("payment-history")
   @ResponseMessage("payment history")
   async getPaymentHistory(@Query() query: QueryPaymentDto){
-     return await this.paymentService.findPayment();query
+     return await this.paymentService.findPayment(query);
   }
 
 
