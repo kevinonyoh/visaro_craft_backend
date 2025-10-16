@@ -97,4 +97,8 @@ export class PaymentService {
        return await this.paymentRepository.findAll({userId: user.id});
    }
 
+   async findPayment(){
+      return await this.paymentRepository.findAll({});
+   }
+
 }

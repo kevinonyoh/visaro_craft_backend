@@ -59,11 +59,18 @@ export class PaymentController {
      return await this.paymentService.findPaymentOptions();
   }
 
-  @Get("payment-history")
+  @Get("user-payment-history")
   @HttpCode(200)
-  @ResponseMessage("payment options")
+  @ResponseMessage("payment history")
   async getUserPayment(@User() user: IUser){
      return await this.paymentService.findUserPayment(user);
+  }
+
+  @IsAdmin()
+  @Get("payment-history")
+  @ResponseMessage("payment history")
+  async getPaymentHistory(){
+     return await this.paymentService.findPayment();
   }
 
 
