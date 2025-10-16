@@ -33,7 +33,7 @@ export class PaymentController {
 
 
   @IsLogin()
-  @Get("/:checkoutSessionId")
+  @Get("verify-payment/:checkoutSessionId")
   @HttpCode(200)
   @ResponseMessage("payment confirmation")
   async confirmPayment(@Param("checkoutSessionId") checkoutSessionId: string, @TransactionParam() transaction: Transaction){
