@@ -32,10 +32,6 @@ export class QueryPetitionDto{
 export class DocumentsDto{
     @IsString()
     @IsNotEmpty()
-    petitionId: string;
-
-    @IsString()
-    @IsNotEmpty()
     fileName: string;
 
     @IsString()

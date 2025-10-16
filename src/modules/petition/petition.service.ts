@@ -52,7 +52,13 @@ export class PetitionService {
 }
 
 async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
-    const {petitionId, ...rest} = data;
+  
+    const petitionData = await this.petitonRepository.findOne({userId: user.id})
+
+    if(!petitionData) throw new BadRequestException("you haven't create a petition yet");
+
+    const petitionDataJson = petitionData.toJSON();
+
 
     const payload: IFindPayment = {
       userId: user.id,
@@ -63,7 +69,7 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
 
     if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
-    return await this.documentRepository.create({petitionId, uploadedBy: user.id, ...rest}, transaction);
+    return await this.documentRepository.create({petitionId: petitionDataJson.id, uploadedBy: user.id, ...data}, transaction);
 }
 
 async activatePetition(user: IUser, petitionId: string, transaction:Transaction){
