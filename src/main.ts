@@ -5,12 +5,22 @@ import { loggerMiddleware } from './common/middleware/logger.middleware';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import * as dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
+import * as fs from 'fs';
+import * as https from 'https';
 
 dotenv.config();
 
 async function bootstrap() {
 
+  const httpsOptions = {
+    key: fs.readFileSync('/etc/ssl/private/server.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/server.crt'),
+  };
+
   const app = await NestFactory.create(AppModule, {cors: true});
+
+  https.createServer(httpsOptions, app.getHttpAdapter().getInstance()).listen(5003);
+
 
   const port = process.env.PORT || 5003;
 
