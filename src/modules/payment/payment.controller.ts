@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Req, Res, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Req, Res, Headers, Query } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto, CreatePaymentIntentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, QueryPaymentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 import { IUser } from '../users/interfaces/user.interface';
@@ -62,15 +62,15 @@ export class PaymentController {
   @Get("user-payment-history")
   @HttpCode(200)
   @ResponseMessage("payment history")
-  async getUserPayment(@User() user: IUser){
-     return await this.paymentService.findUserPayment(user);
+  async getUserPayment(@User() user: IUser, @Query() query: QueryPaymentDto){
+     return await this.paymentService.findUserPayment(user, query);
   }
 
   @IsAdmin()
   @Get("payment-history")
   @ResponseMessage("payment history")
-  async getPaymentHistory(){
-     return await this.paymentService.findPayment();
+  async getPaymentHistory(@Query() query: QueryPaymentDto){
+     return await this.paymentService.findPayment();query
   }
 
 

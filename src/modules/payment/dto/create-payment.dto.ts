@@ -1,5 +1,5 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { IPaymentType } from "../interface/payment.interface";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IPaymentType, IStatus } from "../interface/payment.interface";
 import { Transform } from "class-transformer";
 
 
@@ -24,4 +24,11 @@ export class UpdatePaymentOptionDto{
     @IsNumber()
     @IsNotEmpty()
     amount: number;
+}
+
+
+export class QueryPaymentDto{
+   @IsEnum(IStatus)
+   @IsOptional()
+   status: IStatus;
 }

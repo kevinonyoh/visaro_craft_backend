@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreatePaymentDto, CreatePaymentIntentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreatePaymentIntentDto, QueryPaymentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { StripeService } from './payment-factory/integration/stripe.service';
 import { IUser } from '../users/interfaces/user.interface';
@@ -93,12 +93,12 @@ export class PaymentService {
        return await this.paymentRepository.findOne({...data, status: IStatus.SUCCESSFUL})
    }
 
-   async findUserPayment(user:IUser){
-       return await this.paymentRepository.findAll({userId: user.id});
+   async findUserPayment(user:IUser, data: QueryPaymentDto){
+       return await this.paymentRepository.findAll({userId: user.id, ...data});
    }
 
-   async findPayment(){
-      return await this.paymentRepository.findAll({});
+   async findPayment(data: QueryPaymentDto){
+      return await this.paymentRepository.findAll({...data});
    }
 
 }
