@@ -30,5 +30,5 @@ export interface IFindPayment{
   paymentOptionName: IPaymentType;
   PaymentOptionsId?: string;
   email?: string;
-  stripeId?: string; 
+  checkoutSessionId?: string; 
 }

@@ -92,4 +92,9 @@ export class PaymentService {
    async findSuccessfulPayment(data: IFindPayment){
        return await this.paymentRepository.findOne({...data, status: IStatus.SUCCESSFUL})
    }
+
+   async findUserPayment(user:IUser){
+       return await this.paymentRepository.findAll({userId: user.id});
+   }
+
 }

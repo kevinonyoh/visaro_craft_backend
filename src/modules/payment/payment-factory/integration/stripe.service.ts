@@ -37,10 +37,7 @@ export class StripeService{
           case 'checkout.session.completed': {
             const session = event.data.object as Stripe.Checkout.Session;
         
-            await this.paymentRepository.update(
-              { status: IStatus.SUCCESSFUL },
-               { checkoutSessionId: session.id},
-            );
+            await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
         
             this.logger.log(
               '========================================= Checkout session completed! Payment successful =========================================',
