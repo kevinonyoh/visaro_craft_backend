@@ -5,6 +5,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ConfigService } from '@nestjs/config';
 import { IS_LOGIN_KEY } from '../decorators/login.decorator';
 import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
+import { IS_AGENT_KEY } from '../decorators/is-agent.decorator';
 
 
 
@@ -23,6 +24,9 @@ export class AuthGuard implements CanActivate {
     const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [context.getHandler(), context.getClass()]);
 
     const isLogin = this.reflector.getAllAndOverride<boolean>(IS_LOGIN_KEY, [context.getHandler(), context.getClass()]);
+
+    const isAgent = this.reflector.getAllAndOverride<boolean>(IS_AGENT_KEY, [context.getHandler(), context.getClass()]);
+
     
 
 
@@ -33,6 +37,8 @@ export class AuthGuard implements CanActivate {
     if (isLogin) return await this.validateAnyLogin(request);
 
     if (isAdmin) return await this.validateAdmin(request);
+
+    if(isAgent) return await this.validateAgent(request);
 
     const token = request.headers['authorization'];
 
@@ -79,6 +85,29 @@ export class AuthGuard implements CanActivate {
 
     return true;
   }
+
+  private async validateAgent(request) {
+    const token = request.headers['authorization'];
+
+    if (!token) throw new UnauthorizedException('Valid token is required');
+
+    const _token = token.replace(/(Bearer\s|bearer\s)/, '');
+    
+    const secret = this.configService.get<string>('agentSecretKey');
+     
+    try {
+      const decoded = await this.jwtService.verifyAsync(_token, { secret });
+ 
+      request.agent = decoded;
+    } catch (err) {
+      if (/Token/.test(err.name)) throw new UnauthorizedException('Invalid token');
+      
+      throw err;
+    }
+
+    return true;
+  }
+
 
 
   private async validateAnyLogin(request) {

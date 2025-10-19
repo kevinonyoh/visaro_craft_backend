@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as helpers from "src/common/utils/helper";
 import * as bcrypt from "bcrypt";
 import { AdminService } from '../admin/admin.service';
+import { AgentService } from '../agent/agent.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
     private readonly userService: UsersService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly adminService: AdminService
+    private readonly adminService: AdminService,
+    private readonly agentService: AgentService
   ) {}
 
   async userLogin(data: LoginDto) {
@@ -58,6 +60,29 @@ export class AuthService {
         ...admin.toJSON(),
         accessToken
       };
+
+  }
+
+
+  async agentLogin(data: LoginDto){
+    const {email, password} = data;
+
+    const agent = await this.agentService.findByEmail(email);
+
+    if (!agent || agent['deletedAt']) throw new UnauthorizedException('Invalid login credentials'); 
+
+    // if (!agent.isActivated && agent.isEmailVerified) throw new ForbiddenException('Account deactivated');
+
+    const comparePassword = bcrypt.compareSync(password, agent.password);
+
+    if (!comparePassword) throw new UnauthorizedException('Invalid login credentials');
+
+    const accessToken = await helpers.getAccessToken(agent, this.jwtService, () => this.configService.get<'string'>('agentSecretKey'));
+  
+    return {
+      ...agent.toJSON(),
+      accessToken
+    };
 
   }
 

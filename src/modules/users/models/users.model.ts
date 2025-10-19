@@ -1,5 +1,6 @@
-import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { ExcludeFieldsFromJSON } from "src/common/utils/helper";
+import { AgentsModel } from "src/modules/agent/model/agent.model";
 
 
 @Table({
@@ -55,6 +56,14 @@ export class UsersModel extends Model<UsersModel>{
     @AllowNull(true)
     @Column
     countryCode: string;
+
+    @ForeignKey(() => AgentsModel)
+    @AllowNull(false)
+    @Column(DataType.STRING(128))
+    agentId: string;
+
+
+
 
     toJSON() {
         const data = Object.assign({}, this.get())

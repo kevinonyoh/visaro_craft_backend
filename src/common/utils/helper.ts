@@ -1,6 +1,7 @@
 import { JwtService } from "@nestjs/jwt";
 import { Op } from "sequelize";
 import { AdminModel } from "src/modules/admin/model/admin.model";
+import { AgentsModel } from "src/modules/agent/model/agent.model";
 import { UsersModel } from "src/modules/users/models/users.model";
 
 export const generateRandomPassword = () => {
@@ -59,7 +60,7 @@ export const referenceGenerator = () => {
   return result;
 }
 
-export const getAccessToken = async (user: UsersModel | AdminModel, jwtService: JwtService, configServiceCallback: () => string) => {
+export const getAccessToken = async (user: UsersModel | AdminModel | AgentsModel, jwtService: JwtService, configServiceCallback: () => string) => {
   const secret = configServiceCallback();
 
   return await jwtService.signAsync({ id: user.id, email: user.email }, { secret });

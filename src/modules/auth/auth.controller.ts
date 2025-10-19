@@ -24,4 +24,13 @@ export class AuthController {
   async adminLogin(@Body() body: LoginDto) {
      return await this.authService.adminLogin(body);
   }
+
+
+  @Public()
+  @Post('agent-login')
+  @ResponseMessage("logged in successfully")
+  @HttpCode(200)
+  async agentLogin(@Body() body: LoginDto) {
+     return await this.authService.agentLogin(body);
+  }
 }

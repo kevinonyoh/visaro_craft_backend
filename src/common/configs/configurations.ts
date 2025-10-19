@@ -14,7 +14,8 @@ export default () => ({
     mailUser: process.env.MAIL_USER,
     mailPassword: process.env.MAIL_PASSWORD,
     mailFrom: process.env.MAIL_FROM,
-    adminSecretKey: process.env.ADMIN_SECRET_KEY
+    adminSecretKey: process.env.ADMIN_SECRET_KEY,
+    agentSecretKey: process.env.AGENT_SECRET_KEY
     // googleClientId: process.env.GOOGLE_CLIENT_ID,
     // googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
     // googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL,
