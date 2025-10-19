@@ -58,7 +58,7 @@ export class UsersModel extends Model<UsersModel>{
     countryCode: string;
 
     @ForeignKey(() => AgentsModel)
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.STRING(128))
     agentId: string;
 
