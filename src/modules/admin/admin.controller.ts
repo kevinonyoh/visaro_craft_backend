@@ -41,8 +41,22 @@ export class AdminController {
   @Get("profile")
   @HttpCode(200)
   @ResponseMessage("user profile")
-  async userProfile(@Admin() admin: IAdmin){
+  async adminProfile(@Admin() admin: IAdmin){
     return await this.adminService.findAdminProfile(admin)
+  }
+
+  @Get("all-users")
+  @HttpCode(200)
+  @ResponseMessage("All users profile")
+  async getAllUserProfile(){
+    return await this.adminService.findAllUsers();
+  }
+
+  @Get("user/:id")
+  @HttpCode(200)
+  @ResponseMessage("user profile")
+  async getUserProfile(@Param("id") id: string){
+    return await this.adminService.findUser(id);
   }
  
 }

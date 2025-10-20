@@ -66,3 +66,5 @@ export class UploadCVDto{
     cvPublicId: string;
     
 }
+
+

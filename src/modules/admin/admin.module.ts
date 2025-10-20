@@ -6,9 +6,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AdminModel } from './model/admin.model';
 import { EmailModule } from 'src/shared/notification/email/email.module';
 import { CacheStoreModule } from 'src/shared/cache-store/cache-store.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule],
+  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule, UsersModule],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository],
   exports: [AdminService]

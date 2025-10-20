@@ -94,6 +94,27 @@ export class UsersService {
      return await this.usersRepository.findOne({email});
   }
 
-  
+  async updateProfile(user: IUser, data: UpdateUserDto, transaction: Transaction){
+     return await this.usersRepository.update({id: user.id}, {...data}, transaction);
+  }
+
+  async findAllUsers(){
+
+    const includeOption = {
+      attributes: { exclude: ['password'] },
+
+      order: [['createdAt', 'DESC']]
+    }
+
+    return await this.usersRepository.findAll({}, <unknown>includeOption);
+  }
  
+  async adminFindUser(id: string){
+     const user = await this.usersRepository.findOne({id})
+     
+     return {
+      ...user.toJSON()
+     }
+  }
+
 }

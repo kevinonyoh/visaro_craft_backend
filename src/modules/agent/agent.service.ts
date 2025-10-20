@@ -92,6 +92,4 @@ async findByEmail(email: string){
    return await this.agentsRepository.findOne({email})
 }
 
-
-
 }

@@ -8,6 +8,7 @@ import { EmailService } from 'src/shared/notification/email/email.service';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { Transaction } from 'sequelize';
 import { IAdmin } from './interfaces/admin.interface';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AdminService {
@@ -15,7 +16,9 @@ export class AdminService {
   constructor(
     private readonly adminRepository: AdminRepository,
     private readonly emailService: EmailService,
-    private readonly cacheStoreService: CacheStoreService){}
+    private readonly cacheStoreService: CacheStoreService,
+    private readonly usersService: UsersService
+    ){}
 
   create(createAdminDto: CreateAdminDto) {
     return 'This action adds a new admin';
@@ -62,5 +65,13 @@ export class AdminService {
     const adminJson = data.toJSON();
 
     return adminJson;
+  }
+
+  async findAllUsers(){
+     return await this.usersService.findAllUsers();
+  }
+
+  async findUser(id: string){
+      return await this.usersService.adminFindUser(id);
   }
 }

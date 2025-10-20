@@ -62,6 +62,9 @@ export class UsersModel extends Model<UsersModel>{
     @Column(DataType.STRING(128))
     agentId: string;
 
+    @AllowNull(true)
+    @Column
+    profilePicture: string;
 
 
 
