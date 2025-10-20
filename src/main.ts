@@ -12,17 +12,21 @@ dotenv.config();
 
 async function bootstrap() {
 
-  // const httpsOptions = {
-  //   key: fs.readFileSync('/etc/ssl/private/server.key'),
-  //   cert: fs.readFileSync('/etc/ssl/certs/server.crt'),
-  // };
-
   const app = await NestFactory.create(AppModule, {cors: true});
-
-  // https.createServer(httpsOptions, app.getHttpAdapter().getInstance()).listen(5003);
 
 
   const port = process.env.PORT || 5003;
+
+  app.enableCors({
+    origin: [
+      'https://visarocraft.com',      
+      'https://web.postman.co',      
+      'https://postman.com',          
+      'http://localhost:3000'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  });
 
   app.setGlobalPrefix('/api/v1');
 
