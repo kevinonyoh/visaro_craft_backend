@@ -17,17 +17,6 @@ async function bootstrap() {
 
   const port = process.env.PORT || 5003;
 
-  app.enableCors({
-    origin: [
-      'https://visarocraft.com',      
-      'https://web.postman.co',      
-      'https://postman.com',          
-      'http://localhost:3000'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  });
-
   app.setGlobalPrefix('/api/v1');
 
   app.use('/api/v1/payment/webhook', bodyParser.raw({ type: 'application/json' }));
