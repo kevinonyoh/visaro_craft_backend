@@ -89,7 +89,7 @@ export class PaymentService {
          ...rest
       }
 
-      return await this.paymentOptionsRepository.update({id}, payload, transaction);
+      return await this.paymentOptionsRepository.create({id}, payload, transaction);
    }
 
    async  findPaymentOptions(){
