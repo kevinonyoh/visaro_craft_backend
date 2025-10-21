@@ -51,8 +51,7 @@ export class PaymentService {
              quantity: 1,
            },
          ],
-         success_url: 'http://localhost:5003/api/v1/payment/confirmation?successful',
-         cancel_url: 'http://localhost:5003/api/v1/payment/confirmation?failed',
+         success_url: 'https://visaro-dashboard.vercel.app/success_board'
        }
 
      const stripeData = await this.stripeService.testInitiatePayment(payload);
