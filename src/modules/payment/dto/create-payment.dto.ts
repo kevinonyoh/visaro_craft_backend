@@ -23,4 +23,8 @@ export class QueryPaymentDto{
    @IsEnum(IStatus)
    @IsOptional()
    status: IStatus;
+
+   @IsEnum(IPaymentType)
+   @IsOptional()
+   paymentType: IPaymentType;
 }
