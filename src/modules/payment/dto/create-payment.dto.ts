@@ -26,5 +26,5 @@ export class QueryPaymentDto{
 
    @IsEnum(IPaymentType)
    @IsOptional()
-   paymentType: IPaymentType;
+   paymentOptionName: IPaymentType;
 }
