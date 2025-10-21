@@ -16,6 +16,10 @@ export class UpdatePaymentOptionDto{
     @IsNumber()
     @IsNotEmpty()
     amount: number;
+
+   @IsString()
+   @IsNotEmpty()
+   name: string;
 }
 
 
