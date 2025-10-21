@@ -98,11 +98,13 @@ export class PaymentService {
    }
 
    async findUserPayment(user:IUser, data: QueryPaymentDto){
-       return await this.paymentRepository.findAll({userId: user.id, ...data});
+      const {paymentType, ...rest} = data;
+       return await this.paymentRepository.findAll({userId: user.id, ...rest, paymentOptionName: paymentType});
    }
 
    async findPayment(data: QueryPaymentDto){
-      return await this.paymentRepository.findAll({...data});
+      const {paymentType, ...rest} = data;
+      return await this.paymentRepository.findAll({...rest, paymentOptionName: paymentType});
    }
 
 }
