@@ -9,6 +9,7 @@ import { DocumentRepository } from './repositories/document.repository';
 import { IFindPayment, IPaymentType } from '../payment/interface/payment.interface';
 import { PaymentModel } from '../payment/models/payment.model';
 import { UsersModel } from '../users/models/users.model';
+import { PetitionModel } from './model/petition.model';
 
 
 @Injectable()
@@ -73,6 +74,7 @@ export class PetitionService {
     return await this.petitonRepository.findOne({id}, <unknown>includeOption);
  }
 
+
  async findAllPetition(data: QueryPetitionDto){
 
   const includeOption = {
@@ -109,6 +111,34 @@ async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){
     if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
     return await this.documentRepository.create({petitionId: petitionDataJson.id, uploadedBy: user.id, ...data}, transaction);
+}
+
+async findUserDocument(user: IUser){
+  const includeOption = {
+    include: [
+       {
+         model: PetitionModel
+       },
+     ]
+    }
+
+    return await this.documentRepository.findAll({uploadedBy: user.id}, <unknown>includeOption);
+}
+
+async findDocumentByAdmin(petitionId: string){
+   const includeOption = {
+    include: [
+       {
+         model: PetitionModel
+       },
+     ]
+    }
+    
+    return await this.documentRepository.findAll({petitionId}, <unknown>includeOption);
+}
+
+async deleteDocument(documentId: string, transaction: Transaction){
+   return await this.documentRepository.delete({id: documentId}, transaction);
 }
 
 async activatePetition(user: IUser, transaction:Transaction){

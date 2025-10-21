@@ -74,4 +74,24 @@ export class PetitionController {
       return await this.petitionService.updatePetitionTimeline(id, body, transaction);
   }
 
+  @Get("user-document")
+  @HttpCode(200)
+  @ResponseMessage("document details")
+  async getUserDocument(@User() user: IUser){
+    return await this.petitionService.findUserDocument(user);
+  }
+
+  @Get("document/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("document details")
+  async getDocument(@Param("petitionId") petitionId: string){
+    return await this.petitionService.findDocumentByAdmin(petitionId);
+  }
+
+  @Delete("document/:documentId")
+  @HttpCode(200)
+  @ResponseMessage("document deleted successfully")
+  async deleteDocument(@Param("documentId") documentId: string, @TransactionParam() transaction: Transaction){
+    return await this.petitionService.deleteDocument(documentId, transaction);
+  }
 }
