@@ -42,6 +42,9 @@ export class PaymentModel extends Model<PaymentModel>{
     @BelongsTo(() => UsersModel)
     user!: UsersModel;
 
+    @BelongsTo(() => PetitionModel)
+    petition!: PetitionModel;
+
     @AllowNull(false)
     @Column(DataType.STRING(128))
     email!: string;

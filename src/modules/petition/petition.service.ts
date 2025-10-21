@@ -7,6 +7,9 @@ import { Transaction } from 'sequelize';
 import { PaymentService } from '../payment/payment.service';
 import { DocumentRepository } from './repositories/document.repository';
 import { IFindPayment, IPaymentType } from '../payment/interface/payment.interface';
+import { PaymentModel } from '../payment/models/payment.model';
+import { UsersModel } from '../users/models/users.model';
+
 
 @Injectable()
 export class PetitionService {
@@ -40,15 +43,51 @@ export class PetitionService {
   }
 
   async findUserPetition(user: IUser){
-     return await this.petitonRepository.findOne({userId: user.id});
+
+    const includeOption = {
+      include: [
+         {
+           model: UsersModel,
+           attributes: ['firstName', 'lastName', 'email']
+         }
+       ]
+      }
+     return await this.petitonRepository.findOne({userId: user.id}, <unknown>includeOption);
+
   }
 
   async findPetition(id: string){
-    return await this.petitonRepository.findOne({id});
+
+    const includeOption = {
+      include: [
+         {
+           model: PaymentModel
+         },
+         {
+          model: UsersModel,
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }
+       ]
+      }
+
+    return await this.petitonRepository.findOne({id}, <unknown>includeOption);
  }
 
  async findAllPetition(data: QueryPetitionDto){
-  return await this.petitonRepository.findAll({...data});
+
+  const includeOption = {
+    include: [
+       {
+         model: PaymentModel
+       },
+       {
+        model: UsersModel,
+        attributes: ['id', 'firstName', 'lastName', 'email']
+      }
+     ]
+    }
+
+  return await this.petitonRepository.findAll({...data}, <unknown>includeOption);
 }
 
 async uploadDocument(user: IUser, data: DocumentsDto, transaction: Transaction){

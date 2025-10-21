@@ -10,6 +10,9 @@ import { Request, Response } from 'express';
 import { PaymentRepository } from './repositories/payment.repository';
 import { Transaction } from 'sequelize';
 import { PetitionService } from '../petition/petition.service';
+import { PaymentModel } from './models/payment.model';
+import { PetitionModel } from '../petition/model/petition.model';
+import { UsersModel } from '../users/models/users.model';
 
 @Injectable()
 export class PaymentService {
@@ -97,12 +100,37 @@ export class PaymentService {
        return await this.paymentRepository.findOne({...data, status: IStatus.SUCCESSFUL})
    }
 
+
    async findUserPayment(user:IUser, data: QueryPaymentDto){
-       return await this.paymentRepository.findAll({userId: user.id, ...data});
+      const includeOption = {
+         include: [
+            {
+              model: PetitionModel
+            },
+            {
+               model: UsersModel,
+               attributes: ['firstName', 'lastName', 'email']
+             }
+          ]
+       }
+      return await this.paymentRepository.findAll({userId: user.id, ...data}, <unknown>includeOption);
    }
 
    async findPayment(data: QueryPaymentDto){
-      return await this.paymentRepository.findAll({...data});
+   
+    const includeOption = {
+      include: [
+         {
+           model: PetitionModel
+         },
+         {
+            model: UsersModel,
+            attributes: ['firstName', 'lastName', 'email']
+          }
+       ]
+      }
+
+      return await this.paymentRepository.findAll({...data}, <unknown>includeOption);
    }
 
 }

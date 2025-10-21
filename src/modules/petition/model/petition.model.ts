@@ -1,7 +1,8 @@
 import { All } from "@nestjs/common";
-import { AllowNull, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { UsersModel } from "src/modules/users/models/users.model";
 import { IPetitionStatus, IPetitionTimeline, IPetitionType } from "../interface/petition.interface";
+import { PaymentModel } from "src/modules/payment/models/payment.model";
 
 @Table({
     tableName: "petitions",
@@ -36,4 +37,10 @@ export class PetitionModel extends Model<PetitionModel>{
     @AllowNull
     @Column(DataType.BOOLEAN)
     isPetitionActivated: boolean;
+
+    @BelongsTo(() => UsersModel)
+    user: UsersModel;
+
+    @HasMany(()=> PaymentModel)
+    payment: PaymentModel;
 }

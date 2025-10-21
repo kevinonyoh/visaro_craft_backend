@@ -1,6 +1,8 @@
-import { AllowNull, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, Column, DataType, Default, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { ExcludeFieldsFromJSON } from "src/common/utils/helper";
 import { AgentsModel } from "src/modules/agent/model/agent.model";
+import { PaymentModel } from "src/modules/payment/models/payment.model";
+import { PetitionModel } from "src/modules/petition/model/petition.model";
 
 
 @Table({
@@ -66,7 +68,11 @@ export class UsersModel extends Model<UsersModel>{
     @Column
     profilePicture: string;
 
+    @HasOne(() => PetitionModel)
+    petition: PetitionModel;
 
+    @HasMany(()=> PaymentModel)
+    payment: PaymentModel;
 
     toJSON() {
         const data = Object.assign({}, this.get())
