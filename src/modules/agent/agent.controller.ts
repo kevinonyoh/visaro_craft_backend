@@ -11,6 +11,7 @@ import { IAgent } from './interfaces/agent.interface';
 import { IsAgent } from 'src/common/decorators/is-agent.decorator';
 
 
+
 @IsAgent()
 @Controller('agent')
 export class AgentController {
@@ -48,5 +49,11 @@ export class AgentController {
     return await this.agentService.findAgent(agent)
   }
 
+  @Get("refer-users")
+  @HttpCode(200)
+  @ResponseMessage("users refer by agent")
+  async getReferUsers(@Agent() agent: IAgent){
+    return await this.agentService.findAgentUsers(agent);
+  }
  
 }

@@ -1,5 +1,6 @@
-import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, Column, DataType, Default, HasMany, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { IAgentBank } from "../interfaces/agent.interface";
+import { UsersModel } from "src/modules/users/models/users.model";
 
 
 @Table({
@@ -51,6 +52,9 @@ export class AgentsModel extends Model<AgentsModel> {
     @AllowNull(false)
     @Column
     pin!: string;
+
+    @HasMany(()=> UsersModel)
+    user: UsersModel;
   
     toJSON() {
       const data = Object.assign({}, this.get());

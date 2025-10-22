@@ -46,7 +46,7 @@ export class PaymentController {
   @Post("update-payment-option/:id")
   @HttpCode(200)
   @ResponseMessage("payment option updated successfully")
-  async updatePaymentOption(@Param("id") id:string, @Body() body: UpdatePaymentOptionDto, @TransactionParam() transaction: Transaction){
+  async updatePaymentOption(@Param("id") id: string, @Body() body: UpdatePaymentOptionDto, @TransactionParam() transaction: Transaction){
      return await this.paymentService.updatePaymentOption(id, body, transaction);
   }
 

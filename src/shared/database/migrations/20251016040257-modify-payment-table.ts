@@ -4,15 +4,15 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    await queryInterface.removeColumn('payments', 'stripe_client_secret');
+    // await queryInterface.removeColumn('payments', 'stripe_client_secret');
 
-    await queryInterface.renameColumn('payments', 'stripe_id', 'checkout_session_id');
+    // await queryInterface.renameColumn('payments', 'stripe_id', 'checkout_session_id');
 
-    await queryInterface.addColumn('payments', 'payment_url', {
-      type: Sequelize.TEXT,
-      allowNull: false,
+    // await queryInterface.addColumn('payments', 'payment_url', {
+    //   type: Sequelize.TEXT,
+    //   allowNull: false,
   
-    });
+    // });
 
   },
 

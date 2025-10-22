@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { Transaction } from 'sequelize';
@@ -8,6 +8,7 @@ import * as helpers from "src/common/utils/helper";
 import { EmailService } from 'src/shared/notification/email/email.service';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { IUser } from './interfaces/user.interface';
+import { AgentService } from '../agent/agent.service';
 
 @Injectable()
 export class UsersService {
@@ -15,11 +16,14 @@ export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository, 
     private readonly emailService: EmailService,
-    private readonly cacheStoreService: CacheStoreService
+    private readonly cacheStoreService: CacheStoreService,
+    private readonly agentService: AgentService
     ){}
   
-   async create(data: CreateUserDto, transation: Transaction) {
+   async create(agent: AgentQueryDto, data: CreateUserDto, transation: Transaction) {
      const { password, email, firstName, ...rest} = data;
+
+     const { agentId } = agent;
 
      const user = await this.usersRepository.findOne({email});
 
@@ -33,7 +37,8 @@ export class UsersService {
       ...rest,
       firstName,
       password: hashPassword,
-      email
+      email,
+      agentId
      }
 
      const val = await this.usersRepository.create(payload, transation);
@@ -41,6 +46,8 @@ export class UsersService {
      const userData = val.toJSON();
 
     await this.emailService.signUp({email, firstName});
+
+    if(agentId) await this.agentService.createAgentReward(userData.id, transation);
 
     return userData;
   }
@@ -116,5 +123,4 @@ export class UsersService {
       ...user.toJSON()
      }
   }
-
 }

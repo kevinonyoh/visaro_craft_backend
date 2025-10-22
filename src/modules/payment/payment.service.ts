@@ -82,14 +82,13 @@ export class PaymentService {
    }
 
    async updatePaymentOption(id: string, data: UpdatePaymentOptionDto, transaction: Transaction){
-      const {amount, ...rest} = data;
+      const {amount} = data;
 
       const payload = {
-         amount: (amount * 100),
-         ...rest
+         amount: (amount * 100)
       }
 
-      return await this.paymentOptionsRepository.create(payload, transaction);
+      return await this.paymentOptionsRepository.update({id}, payload, transaction);
    }
 
    async  findPaymentOptions(){

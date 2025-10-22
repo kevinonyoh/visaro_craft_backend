@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -18,8 +18,8 @@ export class UsersController {
   @Post("create")
   @HttpCode(201)
   @ResponseMessage("new courses created successfully")
-  async create(@Body() body: CreateUserDto, @TransactionParam() transaction: Transaction) {
-    return await  this.usersService.create(body, transaction);
+  async create(@Query() agent: AgentQueryDto, @Body() body: CreateUserDto, @TransactionParam() transaction: Transaction) {
+    return await  this.usersService.create(agent, body, transaction);
   }
 
 

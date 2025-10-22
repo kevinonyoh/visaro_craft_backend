@@ -6,8 +6,11 @@ import { Transaction } from 'sequelize';
 import { EmailService } from 'src/shared/notification/email/email.service';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import * as helpers from "src/common/utils/helper";
-import { IAgent } from './interfaces/agent.interface';
+import { IAgent, IAgentRewardStatus } from './interfaces/agent.interface';
 import * as bcrypt from "bcrypt";
+import { UsersModel } from '../users/models/users.model';
+import { AgentRewardRepository } from './repositories/agent-reward.repository';
+import { AgentRewardsModel } from './model/agent-reward.model';
 
 @Injectable()
 export class AgentService {
@@ -15,7 +18,8 @@ export class AgentService {
   constructor(
     private readonly agentsRepository: AgentsRepository,
     private readonly emailService: EmailService,
-    private readonly cacheStoreService: CacheStoreService
+    private readonly cacheStoreService: CacheStoreService,
+    private readonly agentRewardRepository: AgentRewardRepository
     ){}
 
 
@@ -90,6 +94,36 @@ export class AgentService {
 
 async findByEmail(email: string){
    return await this.agentsRepository.findOne({email})
+}
+
+
+async findAgentUsers(agent: IAgent){
+  const includeOption = {
+    include: [
+       {
+         model: UsersModel,
+         attributes: { exclude: ['password'] },
+         include: [
+          {
+            model: AgentRewardsModel,
+          },
+        ]
+       }
+     ]
+  }
+  return await this.agentsRepository.findOne({id: agent.id}, <unknown>includeOption);
+}
+
+
+
+async createAgentReward(userId: string, transaction: Transaction){
+   const payload = {
+     userId,
+     status: IAgentRewardStatus.PENDING,
+     stage: 0
+   }
+
+   await this.agentRewardRepository.create(payload, transaction);
 }
 
 }

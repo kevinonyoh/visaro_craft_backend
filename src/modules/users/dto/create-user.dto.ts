@@ -25,10 +25,12 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     countryCode: string;
+}
 
+export class AgentQueryDto{
     @IsString()
     @IsOptional()
-    AgentId?: string;
+    agentId?: string;
 }
 
 

@@ -1,5 +1,6 @@
-import { AllowNull, Column, DataType, Default, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { ExcludeFieldsFromJSON } from "src/common/utils/helper";
+import { AgentRewardsModel } from "src/modules/agent/model/agent-reward.model";
 import { AgentsModel } from "src/modules/agent/model/agent.model";
 import { PaymentModel } from "src/modules/payment/models/payment.model";
 import { PetitionModel } from "src/modules/petition/model/petition.model";
@@ -73,6 +74,12 @@ export class UsersModel extends Model<UsersModel>{
 
     @HasMany(()=> PaymentModel)
     payment: PaymentModel;
+
+    @HasOne(()=> AgentRewardsModel)
+    AgentReward: AgentRewardsModel;
+
+    @BelongsTo(()=> AgentsModel)
+    Agent: AgentsModel;
 
     toJSON() {
         const data = Object.assign({}, this.get())
