@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
 
 
 class AgentBankDto {
@@ -70,4 +70,15 @@ export class ResetForgetPasswordDto{
     @IsString()
     @IsNotEmpty()
     password: string;
+}
+
+
+export class AgentPaymentRequestDto{
+  @IsNumber()
+  @IsNotEmpty()
+  amount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  pin: string;
 }

@@ -15,3 +15,10 @@ export enum IAgentRewardStatus{
     IN_PROGRESS = "IN_PROGRESS",
     COMPLETED = "COMPLETED"
 }
+
+export enum IAgentTransactionStatus{
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+  

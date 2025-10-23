@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
 import { AgentService } from './agent.service';
-import { CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-agent.dto';
+import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -61,5 +61,12 @@ export class AgentController {
   @ResponseMessage("referrals metrics")
   async getReferralCount(@Agent() agent: IAgent){
     return await this.agentService.findReferralCounts(agent);
+  }
+
+  @Post("request-payment")
+  @HttpCode(200)
+  @ResponseMessage("payment request created successfully")
+  async requestPayment(@Agent() agent: IAgent, @Body() body: AgentPaymentRequestDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.requestPayment(agent, body, transaction);
   }
 }
