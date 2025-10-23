@@ -11,6 +11,8 @@ import * as bcrypt from "bcrypt";
 import { UsersModel } from '../users/models/users.model';
 import { AgentRewardRepository } from './repositories/agent-reward.repository';
 import { AgentRewardsModel } from './model/agent-reward.model';
+import { getReferralCountQuery } from 'src/shared/database/raw-queries/scripts/agent-metric';
+import queryRunner from 'src/shared/database/raw-queries/query-runner';
 
 @Injectable()
 export class AgentService {
@@ -153,6 +155,14 @@ async updateAgentReward(userId: string, rewardAmount: number){
 
       await this.agentRewardRepository.update({userId}, {...payload});
    }
+}
+
+async findReferralCounts(agent: IAgent){
+   const [result] = await queryRunner<any[]>(getReferralCountQuery, {agentId: agent.id});
+
+  return {
+    ...result
+  };
 }
 
 }

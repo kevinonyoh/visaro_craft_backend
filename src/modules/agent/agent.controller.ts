@@ -56,4 +56,10 @@ export class AgentController {
     return await this.agentService.findAgentUsers(agent);
   }
  
+  @Get("referrals-metrics")
+  @HttpCode(200)
+  @ResponseMessage("referrals metrics")
+  async getReferralCount(@Agent() agent: IAgent){
+    return await this.agentService.findReferralCounts(agent);
+  }
 }
