@@ -33,46 +33,46 @@ export class PaymentService {
 
       const petition = await this.petitionService.findUserPetition(user);
 
-      return petition;
+      if(!petition) throw new BadRequestException("Your have not create a petition yet");
 
-   //    const petitionJson = petition.toJSON();
+      const petitionJson = petition.toJSON();
 
-   //    const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
+      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
-   //    if(!payment) throw new BadRequestException("payment type does not exist");
+      if(!payment) throw new BadRequestException("payment type does not exist");
 
-   //    const paymentJson = payment.toJSON();
+      const paymentJson = payment.toJSON();
 
-   //    const payload = {
-   //       payment_method_types: ['card'],
-   //       mode: 'payment',
-   //       line_items: [
-   //         {
-   //           price_data: {
-   //             currency: 'usd',
-   //             product_data: { name: paymentJson.name },
-   //             unit_amount: paymentJson.amount,
-   //           },
-   //           quantity: 1,
-   //         },
-   //       ],
-   //       success_url: 'https://visaro-dashboard.vercel.app/success_board'
-   //     }
+      const payload = {
+         payment_method_types: ['card'],
+         mode: 'payment',
+         line_items: [
+           {
+             price_data: {
+               currency: 'usd',
+               product_data: { name: paymentJson.name },
+               unit_amount: paymentJson.amount,
+             },
+             quantity: 1,
+           },
+         ],
+         success_url: 'https://visaro-dashboard.vercel.app/success_board'
+       }
 
-   //   const stripeData = await this.stripeService.testInitiatePayment(payload);
+     const stripeData = await this.stripeService.testInitiatePayment(payload);
 
-   //    const load = {
-   //       userId: user.id,
-   //       email: user.email,
-   //       checkoutSessionId: stripeData.id,
-   //       paymentUrl: stripeData.url,
-   //       amount: paymentJson.amount,
-   //       paymentOptionName: paymentJson.name,
-   //       petitionId: petitionJson.id,
-   //       paymentOptionsId
-   //    }
+      const load = {
+         userId: user.id,
+         email: user.email,
+         checkoutSessionId: stripeData.id,
+         paymentUrl: stripeData.url,
+         amount: paymentJson.amount,
+         paymentOptionName: paymentJson.name,
+         petitionId: petitionJson.id,
+         paymentOptionsId
+      }
 
-   //     return await this.paymentRepository.create({...load}, transaction);
+       return await this.paymentRepository.create({...load}, transaction);
    }
 
    async webHookStripe(req: Request, res: Response, sig){
