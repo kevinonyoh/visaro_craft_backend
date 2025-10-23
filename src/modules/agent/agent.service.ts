@@ -126,4 +126,33 @@ async createAgentReward(userId: string, transaction: Transaction){
    await this.agentRewardRepository.create(payload, transaction);
 }
 
+async updateAgentReward(userId: string, rewardAmount: number){
+   const data =  await this.agentRewardRepository.findOne({userId});
+
+   if(!data) return;
+
+   const {stage, status} = data.toJSON();
+
+   if(status === IAgentRewardStatus.PENDING && stage === 0){ 
+
+       const payload = {
+        rewardAmount,
+        stage: 1,
+        status: IAgentRewardStatus.IN_PROGRESS
+       }
+
+       await this.agentRewardRepository.update({userId}, {...payload});
+
+   } else if(status === IAgentRewardStatus.IN_PROGRESS && stage === 1){
+    
+      const payload = {
+        rewardAmount,
+        stage: 2,
+        status: IAgentRewardStatus.COMPLETED
+      }
+
+      await this.agentRewardRepository.update({userId}, {...payload});
+   }
+}
+
 }

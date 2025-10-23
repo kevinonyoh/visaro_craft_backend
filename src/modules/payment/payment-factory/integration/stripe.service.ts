@@ -5,13 +5,17 @@ import { Request } from "express";
 import { Transaction } from "sequelize";
 import { PaymentRepository } from "../../repositories/payment.repository";
 import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { AgentService } from "src/modules/agent/agent.service";
 
 
 @Injectable()
 export class StripeService{
     private stripe: Stripe;
 
-    constructor(private readonly paymentRepository: PaymentRepository) {
+    constructor(
+      private readonly paymentRepository: PaymentRepository,
+      private readonly agentService: AgentService
+      ) {
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
             apiVersion: '2025-09-30.clover'
         });
@@ -37,8 +41,14 @@ export class StripeService{
           case 'checkout.session.completed': {
             const session = event.data.object as Stripe.Checkout.Session;
         
-            await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
-        
+             const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
+
+             const { userId, amount } = payment.toJSON();
+
+             const rewardAmount = (amount/100)/10;
+
+             await this.agentService.updateAgentReward(userId, rewardAmount);
+
             this.logger.log(
               '========================================= Checkout session completed! Payment successful =========================================',
               session.id,
