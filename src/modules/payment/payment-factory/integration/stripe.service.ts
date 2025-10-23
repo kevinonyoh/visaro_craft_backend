@@ -43,7 +43,7 @@ export class StripeService{
         
              const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
 
-             const { userId, amount } = payment.toJSON();
+             const { userId, amount,  } = payment.toJSON();
 
              const rewardAmount = (amount/100)/10;
 

@@ -37,6 +37,12 @@ export class PaymentService {
 
       const petitionJson = petition.toJSON();
 
+      const paymentData = await this.paymentRepository.findOne({paymentOptionsId, userId: user.id, status: IStatus.SUCCESSFUL})
+
+      const paymentDataJson = paymentData.toJSON();
+
+      if(!paymentData) throw new BadRequestException(`You have made payment for this ${paymentDataJson.paymentOptionName}`);
+
       const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
       if(!payment) throw new BadRequestException("payment type does not exist");
