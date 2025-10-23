@@ -33,6 +33,8 @@ export class PaymentService {
 
       const petition = await this.petitionService.findUserPetition(user);
 
+      if(!petition) throw new BadRequestException("You have not create a petition yet");
+
       const petitionJson = petition.toJSON();
 
       const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})

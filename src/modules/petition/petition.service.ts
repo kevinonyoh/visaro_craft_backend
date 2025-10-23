@@ -49,10 +49,11 @@ export class PetitionService {
       include: [
          {
            model: UsersModel,
-           attributes: ['firstName', 'lastName', 'email']
+           attributes: ['firstName', 'lastName', 'email', 'id']
          }
        ]
       }
+
      return await this.petitonRepository.findOne({userId: user.id}, <unknown>includeOption);
 
   }
