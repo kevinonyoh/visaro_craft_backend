@@ -63,10 +63,19 @@ export class AgentController {
     return await this.agentService.findReferralCounts(agent);
   }
 
+  @Get("dashboard-metrics")
+  @HttpCode(200)
+  @ResponseMessage("referrals metrics")
+  async getDashboardCount(@Agent() agent: IAgent){
+    return await this.agentService.dashboardMetric(agent);
+  }
+
   @Post("request-payment")
   @HttpCode(200)
   @ResponseMessage("payment request created successfully")
   async requestPayment(@Agent() agent: IAgent, @Body() body: AgentPaymentRequestDto, @TransactionParam() transaction: Transaction){
     return await this.agentService.requestPayment(agent, body, transaction);
   }
+
+
 }

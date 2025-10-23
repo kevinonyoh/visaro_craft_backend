@@ -11,7 +11,7 @@ import * as bcrypt from "bcrypt";
 import { UsersModel } from '../users/models/users.model';
 import { AgentRewardRepository } from './repositories/agent-reward.repository';
 import { AgentRewardsModel } from './model/agent-reward.model';
-import { getReferralCountQuery, totalEarningAndWithdrawQuery } from 'src/shared/database/raw-queries/scripts/agent-metric';
+import { dashboardQuery, getReferralCountQuery, totalEarningAndWithdrawQuery } from 'src/shared/database/raw-queries/scripts/agent-metric';
 import queryRunner from 'src/shared/database/raw-queries/query-runner';
 import { AgentTransactionRepository } from './repositories/Agent-transaction.repository';
 
@@ -195,6 +195,15 @@ async requestPayment(agent: IAgent, data: AgentPaymentRequestDto, transaction: T
   }
 
   return await this.agentTransactionRepository.create(payload, transaction);
+}
+
+
+async dashboardMetric(agent: IAgent){
+  const [result] = await queryRunner<any[]>(dashboardQuery, {agentId: agent.id});
+
+  return {
+    ...result
+  }
 }
 
 }
