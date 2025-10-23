@@ -41,7 +41,7 @@ export class PaymentService {
 
       const paymentDataJson = paymentData.toJSON();
 
-      if(!paymentData) throw new BadRequestException(`You have made payment for this ${paymentDataJson.paymentOptionName}`);
+      if(paymentData) throw new BadRequestException(`You have made payment for this ${paymentDataJson.paymentOptionName}`);
 
       const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
 
