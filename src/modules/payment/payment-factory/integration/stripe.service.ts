@@ -43,11 +43,11 @@ export class StripeService{
         
              const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
 
-             const { userId, amount,  } = payment.toJSON();
+             const { userId, amount,  paymentOptionName} = payment.toJSON();
 
              const rewardAmount = (amount/100)/10;
 
-             await this.agentService.updateAgentReward(userId, rewardAmount);
+             await this.agentService.updateAgentReward(userId, rewardAmount, paymentOptionName);
 
             this.logger.log(
               '========================================= Checkout session completed! Payment successful =========================================',

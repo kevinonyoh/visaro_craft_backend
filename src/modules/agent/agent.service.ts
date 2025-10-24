@@ -14,6 +14,7 @@ import { AgentRewardsModel } from './model/agent-reward.model';
 import { dashboardQuery, getReferralCountQuery, payoutQuery, totalEarningAndWithdrawQuery } from 'src/shared/database/raw-queries/scripts/agent-metric';
 import queryRunner from 'src/shared/database/raw-queries/query-runner';
 import { AgentTransactionRepository } from './repositories/Agent-transaction.repository';
+import { IPaymentType } from '../payment/interface/payment.interface';
 
 @Injectable()
 export class AgentService {
@@ -130,14 +131,14 @@ async createAgentReward(userId: string, transaction: Transaction){
    await this.agentRewardRepository.create(payload, transaction);
 }
 
-async updateAgentReward(userId: string, rewardAmount: number){
+async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName: string){
    const data =  await this.agentRewardRepository.findOne({userId});
 
    if(!data) return;
 
-   const {stage, status} = data.toJSON();
+   const dataJson = data.toJSON();
 
-   if(status === IAgentRewardStatus.PENDING && stage === 0){ 
+   if(dataJson.status === IAgentRewardStatus.PENDING && dataJson.stage === 0 && paymentOptionName === IPaymentType.PETITION_PREPARATION){ 
 
        const payload = {
         rewardAmount,
@@ -147,10 +148,10 @@ async updateAgentReward(userId: string, rewardAmount: number){
 
        await this.agentRewardRepository.update({userId}, {...payload});
 
-   } else if(status === IAgentRewardStatus.IN_PROGRESS && stage === 1){
+   } else if(dataJson.status === IAgentRewardStatus.IN_PROGRESS && dataJson.stage === 1){
     
       const payload = {
-        rewardAmount,
+        rewardAmount: dataJson.rewardAmount+rewardAmount,
         stage: 2,
         status: IAgentRewardStatus.COMPLETED
       }
