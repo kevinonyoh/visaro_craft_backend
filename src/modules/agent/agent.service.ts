@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-agent.dto';
+import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateStatusPayoutDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { AgentsRepository } from './repositories/agent.repository';
 import { Transaction } from 'sequelize';
@@ -15,6 +15,7 @@ import { dashboardQuery, getReferralCountQuery, payoutQuery, totalEarningAndWith
 import queryRunner from 'src/shared/database/raw-queries/query-runner';
 import { AgentTransactionRepository } from './repositories/Agent-transaction.repository';
 import { IPaymentType } from '../payment/interface/payment.interface';
+import { IAdmin } from '../admin/interfaces/admin.interface';
 
 @Injectable()
 export class AgentService {
@@ -113,8 +114,9 @@ async findAgentUsers(agent: IAgent){
             model: AgentRewardsModel,
           },
         ]
-       }
-     ]
+       },
+     ],
+     order: [['updatedAt', 'DESC']]
   }
   return await this.agentsRepository.findOne({id: agent.id}, <unknown>includeOption);
 }
@@ -217,6 +219,18 @@ async findPayoutMetric(agent: IAgent){
   return {
     ...result
   }
+}
+
+async updatePayoutRequestStatus(admin: IAdmin, id: string, data: UpdateStatusPayoutDto, transaction: Transaction){
+  const { agentId } = data;
+
+  const payload = {
+    approvedBy: admin.id,
+    approvedAt: Date(),
+    ...data
+  } 
+
+  return await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
 }
 
 }

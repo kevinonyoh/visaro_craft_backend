@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IAgentTransactionStatus } from "../interfaces/agent.interface";
 
 
 class AgentBankDto {
@@ -48,7 +49,6 @@ export class CreateAgentDto {
 }
 
 
-
   export class ForgetPasswordDto{
 
     @IsEmail()
@@ -81,4 +81,16 @@ export class AgentPaymentRequestDto{
   @IsString()
   @IsNotEmpty()
   pin: string;
+}
+
+export class UpdateStatusPayoutDto{
+
+  @IsString()
+  @IsNotEmpty()
+  agentId: string;
+  
+  @IsEnum(IAgentTransactionStatus)
+  @IsNotEmpty()
+  status: IAgentTransactionStatus; 
+
 }

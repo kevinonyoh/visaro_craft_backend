@@ -9,12 +9,17 @@ import { Transaction } from 'sequelize';
 import { IAdmin } from './interfaces/admin.interface';
 import { Admin } from 'src/common/decorators/admin.decorator';
 import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
+import { AgentService } from '../agent/agent.service';
+import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
 
 
 @IsAdmin()
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly agentService: AgentService
+    ) {}
 
   @Post()
   create(@Body() createAdminDto: CreateAdminDto) {
@@ -57,6 +62,13 @@ export class AdminController {
   @ResponseMessage("user profile")
   async getUserProfile(@Param("id") id: string){
     return await this.adminService.findUser(id);
+  }
+
+  @Put("update-payout-request-status/:id")
+  @HttpCode(200)
+  @ResponseMessage("Status update Successfully")
+  async updatePayoutRequestStatus(@Admin() admin: IAdmin, @Param("id") id: string, @Body() body: UpdateStatusPayoutDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.updatePayoutRequestStatus(admin, id, body, transaction);
   }
  
 }

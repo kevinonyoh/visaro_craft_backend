@@ -9,6 +9,7 @@ import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { Transaction } from 'sequelize';
 import { IAdmin } from './interfaces/admin.interface';
 import { UsersService } from '../users/users.service';
+import { AgentTransactionRepository } from '../agent/repositories/Agent-transaction.repository';
 
 @Injectable()
 export class AdminService {
