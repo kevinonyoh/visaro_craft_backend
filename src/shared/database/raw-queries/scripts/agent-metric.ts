@@ -53,3 +53,29 @@ export const dashboardQuery = () => `
   LEFT JOIN "agent-rewards" AS ar ON ar.user_id = u.id
   WHERE u.agent_id = :agentId;
 `;
+
+
+export const payoutQuery = () =>   `
+      SELECT
+      COALESCE(SUM("ar"."reward_amount"), 0) AS total_earning,
+      COALESCE((
+        SELECT SUM("at"."amount")
+        FROM "agent_transactions" AS "at"
+        WHERE "at"."agent_id" = :agentId AND "at"."status" = 'APPROVED'
+      ), 0) AS total_payout_received,
+      COALESCE((
+        SELECT SUM("at"."amount")
+        FROM "agent_transactions" AS "at"
+        WHERE "at"."agent_id" = :agentId AND "at"."status" = 'PENDING'
+      ), 0) AS pending_payout,
+      COALESCE(SUM("ar"."reward_amount"), 0) - COALESCE((
+        SELECT SUM("at"."amount")
+        FROM "agent_transactions" AS "at"
+        WHERE "at"."agent_id" = :agentId AND "at"."status" = 'APPROVED'
+      ), 0) AS available_balance
+      FROM "agent-rewards" AS "ar"
+      JOIN "users" AS "u" ON "u"."id" = "ar"."user_id"
+      WHERE "u"."agent_id" = :agentId;
+
+
+  ` 

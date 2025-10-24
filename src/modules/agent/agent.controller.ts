@@ -12,6 +12,7 @@ import { IsAgent } from 'src/common/decorators/is-agent.decorator';
 
 
 
+
 @IsAgent()
 @Controller('agent')
 export class AgentController {
@@ -65,7 +66,7 @@ export class AgentController {
 
   @Get("dashboard-metrics")
   @HttpCode(200)
-  @ResponseMessage("referrals metrics")
+  @ResponseMessage("dashboard metrics")
   async getDashboardCount(@Agent() agent: IAgent){
     return await this.agentService.dashboardMetric(agent);
   }
@@ -77,5 +78,18 @@ export class AgentController {
     return await this.agentService.requestPayment(agent, body, transaction);
   }
 
+  @Get("payout-history")
+  @HttpCode(200)
+  @ResponseMessage("agent payout history")
+  async payoutHistory(@Agent() agent:IAgent){
+    return await this.agentService.findPayoutHistory(agent);
+  }
+
+  @Get("payout-metrics")
+  @HttpCode(200)
+  @ResponseMessage("agent payout history")
+  async payoutMetrics(@Agent() agent:IAgent){
+    return await this.agentService.findPayoutMetric(agent);
+  }
 
 }
