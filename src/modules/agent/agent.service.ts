@@ -148,7 +148,7 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
 
        await this.agentRewardRepository.update({userId}, {...payload});
 
-   } else if(dataJson.status === IAgentRewardStatus.IN_PROGRESS && dataJson.stage === 1){
+   } else if(dataJson.status === IAgentRewardStatus.IN_PROGRESS && dataJson.stage === 1 && paymentOptionName === IPaymentType.REVIEW_PETITION){
     
       const payload = {
         rewardAmount: dataJson.rewardAmount+rewardAmount,
