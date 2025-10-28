@@ -3,6 +3,7 @@ import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, M
 import { UsersModel } from "src/modules/users/models/users.model";
 import { IPetitionStatus, IPetitionTimeline, IPetitionType } from "../interface/petition.interface";
 import { PaymentModel } from "src/modules/payment/models/payment.model";
+import { PetitionStageModel } from "./petition-stage.model";
 
 @Table({
     tableName: "petitions",
@@ -43,4 +44,7 @@ export class PetitionModel extends Model<PetitionModel>{
 
     @HasMany(()=> PaymentModel)
     payment: PaymentModel;
+
+    @HasMany(() => PetitionStageModel)
+    stage: PetitionStageModel;
 }

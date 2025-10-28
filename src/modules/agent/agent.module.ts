@@ -15,6 +15,6 @@ import { AgentTransactionModel } from './model/agent-transaction.model';
   imports: [SequelizeModule.forFeature([AgentsModel, AgentRewardsModel, AgentTransactionModel]), EmailModule, CacheStoreModule],
   controllers: [AgentController],
   providers: [AgentService, AgentsRepository, AgentRewardRepository, AgentTransactionRepository],
-  exports: [AgentService]
+  exports: [AgentService, AgentTransactionRepository]
 })
 export class AgentModule {}

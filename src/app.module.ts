@@ -13,9 +13,10 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { PetitionModule } from './modules/petition/petition.module';
 import { AgentModule } from './modules/agent/agent.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule,],
+  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, ScheduleModule.forRoot(), UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule,],
   controllers: [AppController],
   providers: [AppService, ...appProvider],
 })

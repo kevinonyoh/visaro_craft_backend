@@ -10,6 +10,9 @@ import { IFindPayment, IPaymentType } from '../payment/interface/payment.interfa
 import { PaymentModel } from '../payment/models/payment.model';
 import { UsersModel } from '../users/models/users.model';
 import { PetitionModel } from './model/petition.model';
+import { IPetitionTimeline } from './interface/petition.interface';
+import { PetitionStageRepository } from './repositories/Petition-stage.repository';
+import { PetitionStageModel } from './model/petition-stage.model';
 
 
 @Injectable()
@@ -19,7 +22,8 @@ export class PetitionService {
     private readonly petitonRepository: PetitionRepository,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService,
-    private readonly documentRepository: DocumentRepository
+    private readonly documentRepository: DocumentRepository,
+    private readonly petitionStageRepository: PetitionStageRepository
     ){}
 
   async createPetition(user: IUser,data: CreatePetitionDto, transaction: Transaction) {
@@ -34,7 +38,22 @@ export class PetitionService {
       userId: user.id
      }
 
-     return await this.petitonRepository.create(payload, transaction);
+     const petition = await this.petitonRepository.create(payload, transaction);
+
+     const petitionJson = petition.toJSON();
+
+     const stages = [...Object.values(IPetitionTimeline)]
+
+     const petitionStages = stages.map((stage, index) => ({
+      petitionId: petition.id,
+      weekNumber: index + 1,
+      stage,
+      status: "PENDING",
+    }));
+
+    await this.petitionStageRepository.bulkCreate(petitionStages, transaction);
+
+    return {...petitionJson};
   }
 
   async updatePetitionStatus(id: string, data: UpdatePetitionStatusDto, transaction: Transaction){
@@ -50,7 +69,11 @@ export class PetitionService {
          {
            model: UsersModel,
            attributes: ['firstName', 'lastName', 'email', 'id']
-         }
+         },
+         {
+          model: PetitionStageModel
+        },
+        
        ]
       }
 
@@ -68,6 +91,9 @@ export class PetitionService {
          {
           model: UsersModel,
           attributes: ['id', 'firstName', 'lastName', 'email']
+        },
+        {
+          model: PetitionStageModel
         }
        ]
       }
@@ -86,6 +112,9 @@ export class PetitionService {
        {
         model: UsersModel,
         attributes: ['id', 'firstName', 'lastName', 'email']
+      },
+      {
+        model: PetitionStageModel
       }
      ]
     }

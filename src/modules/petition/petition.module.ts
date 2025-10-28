@@ -7,11 +7,15 @@ import { PetitionRepository } from './repositories/petition.repository';
 import { DocumentsModel } from './model/document.model';
 import { DocumentRepository } from './repositories/document.repository';
 import { PaymentModule } from '../payment/payment.module';
+import { PetitionStageModel } from './model/petition-stage.model';
+import { PetitionStageRepository } from './repositories/Petition-stage.repository';
+import { PetitionCronService } from './crons/petition-cron.service';
+
 
 @Module({
-  imports: [SequelizeModule.forFeature([PetitionModel, DocumentsModel]), forwardRef(() => PaymentModule)],
+  imports: [SequelizeModule.forFeature([PetitionModel, DocumentsModel, PetitionStageModel]), forwardRef(() => PaymentModule)],
   controllers: [PetitionController],
-  providers: [PetitionService, PetitionRepository, DocumentRepository],
+  providers: [PetitionService, PetitionRepository, DocumentRepository, PetitionStageRepository, PetitionCronService],
   exports: [PetitionService]
 })
 export class PetitionModule {}
