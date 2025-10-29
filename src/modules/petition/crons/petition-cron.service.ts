@@ -38,9 +38,9 @@ export class PetitionCronService {
 
     for (const stage of weekOneStage) {
         await stage.update({
-            status: 'IN_PROGRESS',
-            startedAt: newDate,
-        });
+          status: 'IN_PROGRESS',
+          startedAt: newDate,
+      });
 
        this.logger.log(`Stage ${stage.id} updated to IN_PROGRESS`);
     }

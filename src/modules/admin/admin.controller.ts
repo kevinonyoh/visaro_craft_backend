@@ -70,5 +70,40 @@ export class AdminController {
   async updatePayoutRequestStatus(@Admin() admin: IAdmin, @Param("id") id: string, @Body() body: UpdateStatusPayoutDto, @TransactionParam() transaction: Transaction){
     return await this.agentService.updatePayoutRequestStatus(admin, id, body, transaction);
   }
+
+  @Get("dashboard-metric")
+  @HttpCode(200)
+  @ResponseMessage("dashboard metric")
+  async getAdminDashboardMetric(){
+    return await this.adminService.adminDashboardMetric();
+  }
  
+  @Get("petition-metric")
+  @HttpCode(200)
+  @ResponseMessage("petition metric")
+  async getAdminPetitionMetric(){
+    return await this.adminService.petitionMetric();
+  }
+
+  @Get("user-metric")
+  @HttpCode(200)
+  @ResponseMessage("user metric")
+  async getUserMetric(){
+    return await this.adminService.userMetric();
+  }
+
+  @Get("agent-metric")
+  @HttpCode(200)
+  @ResponseMessage("agent metric")
+  async getAgentMetric(){
+    return await this.adminService.agentMetric();
+  }
+
+  @Get("financial-metric")
+  @HttpCode(200)
+  @ResponseMessage("financial metric")
+  async getFinancialMetric(){
+    return await this.adminService.financialMetric();
+  }
+
 }

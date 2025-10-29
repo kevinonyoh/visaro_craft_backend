@@ -10,6 +10,10 @@ import { Transaction } from 'sequelize';
 import { IAdmin } from './interfaces/admin.interface';
 import { UsersService } from '../users/users.service';
 import { AgentTransactionRepository } from '../agent/repositories/Agent-transaction.repository';
+import queryRunner from 'src/shared/database/raw-queries/query-runner';
+import { IStatus } from '../payment/interface/payment.interface';
+import { IAgentTransactionStatus } from '../agent/interfaces/agent.interface';
+import { adminAgentQuery, adminDashboardQuery, adminPetitionQuery, adminUserQuery, adminfinancialQuery } from 'src/shared/database/raw-queries/scripts/admin-metric';
 
 @Injectable()
 export class AdminService {
@@ -75,4 +79,48 @@ export class AdminService {
   async findUser(id: string){
       return await this.usersService.adminFindUser(id);
   }
+
+  async adminDashboardMetric(){
+    const [result] = await queryRunner<any[]>(adminDashboardQuery, {
+      successStatus: IStatus.SUCCESSFUL,
+      approvedStatus: IAgentTransactionStatus.APPROVED, 
+    });
+
+    return {
+      ...result
+    }
+ }
+
+ async petitionMetric(){
+  const [result] = await queryRunner<any[]>(adminPetitionQuery,{});
+
+  return {
+    ...result
+  }
+ }
+
+ async userMetric(){
+  const [result] = await queryRunner<any[]>(adminUserQuery, {});
+
+  return {
+    ...result
+  }
+ }
+
+ async agentMetric(){
+  const [result] = await queryRunner<any[]>(adminAgentQuery,{});
+
+  return {
+    ...result
+  }
+ }
+
+ async financialMetric(){
+   const [result] = await queryRunner<any[]>(adminfinancialQuery, {});
+
+   return {
+    ...result
+   }
+ }
+ 
 }

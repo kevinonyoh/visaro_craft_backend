@@ -47,4 +47,8 @@ export class PetitionModel extends Model<PetitionModel>{
 
     @HasMany(() => PetitionStageModel)
     stage: PetitionStageModel;
+
+    @Default("pending")
+    @Column(DataType.ENUM('pending', 'in_progress', 'completed'))
+    status: string;
 }

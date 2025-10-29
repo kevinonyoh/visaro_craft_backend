@@ -77,5 +77,4 @@ export const payoutQuery = () =>   `
       JOIN "users" AS "u" ON "u"."id" = "ar"."user_id"
       WHERE "u"."agent_id" = :agentId;
 
-
   ` 
