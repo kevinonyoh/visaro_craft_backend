@@ -11,6 +11,7 @@ import { Admin } from 'src/common/decorators/admin.decorator';
 import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
 import { AgentService } from '../agent/agent.service';
 import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 
 @IsAdmin()
@@ -18,7 +19,8 @@ import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,
-    private readonly agentService: AgentService
+    private readonly agentService: AgentService,
+    private readonly auditTrailService: AuditTrailService
     ) {}
 
   @Post()
@@ -104,6 +106,13 @@ export class AdminController {
   @ResponseMessage("financial metric")
   async getFinancialMetric(){
     return await this.adminService.financialMetric();
+  }
+
+  @Get("activities")
+  @HttpCode(200)
+  @ResponseMessage("activities data")
+  async getActivities(){
+    return await this.auditTrailService.findActivities();
   }
 
 }

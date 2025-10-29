@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AgentService } from './agent.service';
 import { AgentController } from './agent.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -10,9 +10,11 @@ import { AgentRewardsModel } from './model/agent-reward.model';
 import { AgentRewardRepository } from './repositories/agent-reward.repository';
 import { AgentTransactionRepository } from './repositories/Agent-transaction.repository';
 import { AgentTransactionModel } from './model/agent-transaction.model';
+import { UsersModule } from '../users/users.module';
+import { AuditTrailModule } from '../audit-trail/audit-trail.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([AgentsModel, AgentRewardsModel, AgentTransactionModel]), EmailModule, CacheStoreModule],
+  imports: [SequelizeModule.forFeature([AgentsModel, AgentRewardsModel, AgentTransactionModel]), EmailModule, CacheStoreModule,  forwardRef(() => UsersModule), AuditTrailModule],
   controllers: [AgentController],
   providers: [AgentService, AgentsRepository, AgentRewardRepository, AgentTransactionRepository],
   exports: [AgentService, AgentTransactionRepository]

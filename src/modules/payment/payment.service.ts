@@ -13,6 +13,7 @@ import { PetitionService } from '../petition/petition.service';
 import { PaymentModel } from './models/payment.model';
 import { PetitionModel } from '../petition/model/petition.model';
 import { UsersModel } from '../users/models/users.model';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 @Injectable()
 export class PaymentService {
@@ -21,7 +22,8 @@ export class PaymentService {
     private readonly usersService: UsersService,
     private readonly petitionService: PetitionService,
     private readonly paymentOptionsRepository: PaymentOptionsRepository,
-    private readonly paymentRepository: PaymentRepository
+    private readonly paymentRepository: PaymentRepository,
+    private readonly auditTrailService: AuditTrailService
     ){}
 
    async createPaymentIntent(user: IUser, data: CreatePaymentIntentDto, transaction: Transaction){
@@ -75,6 +77,10 @@ export class PaymentService {
          petitionId: petitionJson.id,
          paymentOptionsId
       }
+
+      const description = `petition ${ paymentJson.name} fee by ${userData["firstName"]} ${userData["lastName"]}`
+ 
+      await this.auditTrailService.create(description, transaction);
 
        return await this.paymentRepository.create({...load}, transaction);
    }

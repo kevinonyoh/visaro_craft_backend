@@ -10,9 +10,10 @@ import { PaymentRepository } from './repositories/payment.repository';
 import { PaymentModel } from './models/payment.model';
 import { PetitionModule } from '../petition/petition.module';
 import { AgentModule } from '../agent/agent.module';
+import { AuditTrailModule } from '../audit-trail/audit-trail.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule, forwardRef(() => PetitionModule), AgentModule],
+  imports: [SequelizeModule.forFeature([PaymentOptionsModel, PaymentModel]), UsersModule, forwardRef(() => PetitionModule), AgentModule, AuditTrailModule],
   controllers: [PaymentController],
   providers: [PaymentService, StripeService, PaymentOptionsRepository, PaymentRepository],
   exports: [PaymentService]

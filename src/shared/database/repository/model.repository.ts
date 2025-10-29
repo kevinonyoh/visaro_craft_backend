@@ -7,7 +7,7 @@ import constants from "src/common/utils/constants";
 export class ModelRepository<M> implements IModel<M> {
     constructor(private readonly model) {}
 
-    async create<T = unknown>(data: T, transaction: Transaction | null): Promise<M> {
+    async create<T = unknown>(data: T, transaction?: Transaction | null): Promise<M> {
         return this.model.create(data, { transaction });
     }
     

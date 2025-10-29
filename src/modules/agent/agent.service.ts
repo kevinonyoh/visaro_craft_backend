@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateStatusPayoutDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { AgentsRepository } from './repositories/agent.repository';
@@ -16,6 +16,9 @@ import queryRunner from 'src/shared/database/raw-queries/query-runner';
 import { AgentTransactionRepository } from './repositories/Agent-transaction.repository';
 import { IPaymentType } from '../payment/interface/payment.interface';
 import { IAdmin } from '../admin/interfaces/admin.interface';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
+import { UsersService } from '../users/users.service';
+
 
 @Injectable()
 export class AgentService {
@@ -25,7 +28,10 @@ export class AgentService {
     private readonly emailService: EmailService,
     private readonly cacheStoreService: CacheStoreService,
     private readonly agentRewardRepository: AgentRewardRepository,
-    private readonly  agentTransactionRepository: AgentTransactionRepository
+    private readonly  agentTransactionRepository: AgentTransactionRepository,
+    private readonly auditTrailService: AuditTrailService,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService
     ){}
 
 
@@ -55,6 +61,10 @@ export class AgentService {
     const userData = val.toJSON();
 
    await this.emailService.signUp({email, firstName});
+
+   const description = `New Agent: ${userData["firstName"]} ${userData["lastName"]}`
+ 
+   await this.auditTrailService.create(description, transation);
 
    return userData;
  }
@@ -124,6 +134,7 @@ async findAgentUsers(agent: IAgent){
 
 
 async createAgentReward(userId: string, transaction: Transaction){
+
    const payload = {
      userId,
      status: IAgentRewardStatus.PENDING,
@@ -135,6 +146,11 @@ async createAgentReward(userId: string, transaction: Transaction){
 
 async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName: string){
    const data =  await this.agentRewardRepository.findOne({userId});
+
+   const userData = await this.usersService.findUserById(userId)
+
+   const agent = await this.agentsRepository.findOne({id: userData["agentId"]});
+   
 
    if(!data) return;
 
@@ -160,6 +176,11 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
 
       await this.agentRewardRepository.update({userId}, {...payload});
    }
+
+   const description = `${agent["firstName"]} ${agent["lastName"]}: New reward unlock`;
+ 
+   await this.auditTrailService.create(description);
+
 }
 
 async findReferralCounts(agent: IAgent){
@@ -185,6 +206,8 @@ async requestPayment(agent: IAgent, data: AgentPaymentRequestDto, transaction: T
   
   if (amount > availableBalance) throw new BadRequestException('Insufficient balance for withdrawal');
 
+  const agentData = await this.agentsRepository.findOne({id: agent.id});
+
   const user = await this.agentsRepository.findOne({id: agent.id});
 
   const comparePin = bcrypt.compareSync(pin, user.pin);
@@ -196,6 +219,11 @@ async requestPayment(agent: IAgent, data: AgentPaymentRequestDto, transaction: T
      amount,
      status: IAgentTransactionStatus.PENDING
   }
+
+  const description = `Payout request from ${agentData["firstName"]} ${agentData["lastName"]}`;
+ 
+  await this.auditTrailService.create(description, transaction);
+
 
   return await this.agentTransactionRepository.create(payload, transaction);
 }
@@ -232,5 +260,6 @@ async updatePayoutRequestStatus(admin: IAdmin, id: string, data: UpdateStatusPay
 
   return await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
 }
+
 
 }

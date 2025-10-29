@@ -13,6 +13,7 @@ import { PetitionModel } from './model/petition.model';
 import { IPetitionTimeline } from './interface/petition.interface';
 import { PetitionStageRepository } from './repositories/Petition-stage.repository';
 import { PetitionStageModel } from './model/petition-stage.model';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 
 @Injectable()
@@ -23,7 +24,8 @@ export class PetitionService {
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService,
     private readonly documentRepository: DocumentRepository,
-    private readonly petitionStageRepository: PetitionStageRepository
+    private readonly petitionStageRepository: PetitionStageRepository,
+    private readonly auditTrailService: AuditTrailService
     ){}
 
   async createPetition(user: IUser,data: CreatePetitionDto, transaction: Transaction) {

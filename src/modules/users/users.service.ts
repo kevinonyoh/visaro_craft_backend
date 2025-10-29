@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
@@ -9,6 +9,7 @@ import { EmailService } from 'src/shared/notification/email/email.service';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { IUser } from './interfaces/user.interface';
 import { AgentService } from '../agent/agent.service';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +18,9 @@ export class UsersService {
     private readonly usersRepository: UsersRepository, 
     private readonly emailService: EmailService,
     private readonly cacheStoreService: CacheStoreService,
-    private readonly agentService: AgentService
+    private readonly auditTrailService: AuditTrailService,
+    @Inject(forwardRef(() => AgentService))
+    private readonly agentService: AgentService,
     ){}
   
    async create(agent: AgentQueryDto, data: CreateUserDto, transation: Transaction) {
@@ -49,6 +52,10 @@ export class UsersService {
 
     if(agentId) await this.agentService.createAgentReward(userData.id, transation);
 
+    const description = `New User: ${firstName} ${rest["lastName"]}`
+ 
+    await this.auditTrailService.create(description, transation);
+
     return userData;
   }
 
@@ -68,7 +75,7 @@ export class UsersService {
    await this.emailService.forgotPassword({email, firstName: userData.firstName, code: otp});
   }
 
-  async verifyforgotpassword(data: ResetForgetPasswordDto, transaction: Transaction){
+  async verifyforgotpassword(data: ResetForgetPasswordDto, transaction: Transaction){ 
     const { email, otp, password } = data;
 
     const userEmail = await this.cacheStoreService.get(otp);
@@ -94,6 +101,10 @@ export class UsersService {
       const userDataJson = userdata.toJSON();
 
       return userDataJson;
+  }
+
+  async findUserById(userId: string){
+    return await this.usersRepository.findOne({id: userId})
   }
   
 

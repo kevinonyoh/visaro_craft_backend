@@ -8,9 +8,10 @@ import { EmailModule } from 'src/shared/notification/email/email.module';
 import { CacheStoreModule } from 'src/shared/cache-store/cache-store.module';
 import { UsersModule } from '../users/users.module';
 import { AgentModule } from '../agent/agent.module';
+import { AuditTrailModule } from '../audit-trail/audit-trail.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule, UsersModule, AgentModule],
+  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule, UsersModule, AgentModule, AuditTrailModule],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository],
   exports: [AdminService]
