@@ -15,9 +15,10 @@ import { AgentModule } from './modules/agent/agent.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuditTrailModule } from './modules/audit-trail/audit-trail.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
-  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, ScheduleModule.forRoot(), UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule, AuditTrailModule,],
+  imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, ScheduleModule.forRoot(), UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule, AuditTrailModule, ChatModule,],
   controllers: [AppController],
   providers: [AppService, ...appProvider],
 })

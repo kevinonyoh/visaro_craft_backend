@@ -21,6 +21,7 @@ import { UsersService } from '../users/users.service';
 import { availableBalance, totalPayout, totalReferUser, totalRewardEarned } from 'src/shared/database/raw-queries/literals';
 import { AgentTransactionModel } from './model/agent-transaction.model';
 import { PetitionModel } from '../petition/model/petition.model';
+import { PetitionStageModel } from '../petition/model/petition-stage.model';
 
 
 @Injectable()
@@ -318,6 +319,11 @@ async agentReferUsers(agentId: string){
         include: [
           {
             model: PetitionModel,
+            include: [
+              {
+                model: PetitionStageModel
+              }
+            ],
             attributes: { exclude: [] }, 
           },
         ],

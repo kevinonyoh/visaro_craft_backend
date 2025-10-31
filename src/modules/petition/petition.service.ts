@@ -185,7 +185,7 @@ async activatePetition(user: IUser, transaction:Transaction){
 
   return await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
 
-}
+  }
 
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
   const {weekNumber, weeklyReviewFile} = data;
@@ -205,7 +205,7 @@ async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transa
   if(newWeek <= 5)  await this.petitionStageRepository.update({weekNumber: newWeek, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
 
   return await this.petitonRepository.findOne({id}, <unknown>includeOption);
-}
+  }
 
 
 }
