@@ -13,6 +13,8 @@ import { AgentService } from '../agent/agent.service';
 import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { Agent } from 'src/common/decorators/agent.decorator';
+import { UpdatePetitionTimelineDto } from '../petition/dto/create-petition.dto';
+import { PetitionService } from '../petition/petition.service';
 
 
 @IsAdmin()
@@ -21,7 +23,8 @@ export class AdminController {
   constructor(
     private readonly adminService: AdminService,
     private readonly agentService: AgentService,
-    private readonly auditTrailService: AuditTrailService
+    private readonly auditTrailService: AuditTrailService,
+    private readonly petitionService: PetitionService
     ) {}
 
   @Post()
@@ -135,6 +138,13 @@ export class AdminController {
   @ResponseMessage("Payout details")
   async getPayout(){
     return await this.agentService.findPayout();
+  }
+
+  @Put("update-petition-timeline/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("petition timeline update successfully")
+  async updatePetitionTimeline(@Param("petitionId") id: string, @Body() body: UpdatePetitionTimelineDto, @TransactionParam() transaction: Transaction){
+      return await this.petitionService.updatePetitionTimeline(id, body, transaction);
   }
 
 }

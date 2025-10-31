@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreatePaymentDto, CreatePaymentIntentDto, QueryPaymentDto, UpdatePaymentOptionDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { StripeService } from './payment-factory/integration/stripe.service';
@@ -20,6 +20,7 @@ export class PaymentService {
   constructor(
     private readonly stripeService: StripeService,
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => PetitionService))
     private readonly petitionService: PetitionService,
     private readonly paymentOptionsRepository: PaymentOptionsRepository,
     private readonly paymentRepository: PaymentRepository,

@@ -188,15 +188,24 @@ async activatePetition(user: IUser, transaction:Transaction){
 }
 
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
-    const {petitionTimeline} = data;
-    const petition = await this.petitonRepository.findOne({id});
+  const {weekNumber, weeklyReviewFile} = data;
+  
+  await this.petitionStageRepository.update({weekNumber, petitionId: id}, {weeklyReviewFile, status: "COMPLETE"}, transaction);
+  
+  const newWeek = weekNumber+1;
 
-    const petitionJson = petition.toJSON();
-
-    if(!petitionJson.isPetitionActivated) throw new BadRequestException("Petition is yet to be activated by this user")
-    
-    return await this.petitonRepository.update({id}, {petitionTimeline}, transaction);
+  const includeOption = {
+    include: [
+      {
+        model: PetitionStageModel,
+      },
+    ]
   }
+
+  if(newWeek <= 5)  await this.petitionStageRepository.update({weekNumber: newWeek, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
+
+  return await this.petitonRepository.findOne({id}, <unknown>includeOption);
+}
 
 
 }

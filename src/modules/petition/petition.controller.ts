@@ -66,14 +66,6 @@ export class PetitionController {
       return await this.petitionService.activatePetition(user, transaction);
   }
 
-  @IsAdmin()
-  @Put("update-petition-timeline/:petitionId")
-  @HttpCode(200)
-  @ResponseMessage("petition timeline update successfully")
-  async updatePetitionTimeline(@Param("petitionId") id: string, @Body() body: UpdatePetitionTimelineDto, @TransactionParam() transaction: Transaction){
-      return await this.petitionService.updatePetitionTimeline(id, body, transaction);
-  }
-
   @Get("user-document")
   @HttpCode(200)
   @ResponseMessage("document details")

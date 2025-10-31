@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { IPetitionStatus, IPetitionTimeline, IPetitionType } from "../interface/petition.interface";
 
 export class CreatePetitionDto {
@@ -44,8 +44,14 @@ export class DocumentsDto{
 }
 
 export class UpdatePetitionTimelineDto{
-    @IsEnum(IPetitionTimeline)
-    @IsOptional()
-    petitionTimeline: IPetitionTimeline;
+   
+    @IsNumber()
+    @IsNotEmpty()
+    weekNumber: number;
+
+    @IsString()
+    @IsNotEmpty()
+    weeklyReviewFile: string
+
 }
 

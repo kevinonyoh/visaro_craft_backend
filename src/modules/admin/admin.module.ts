@@ -9,9 +9,10 @@ import { CacheStoreModule } from 'src/shared/cache-store/cache-store.module';
 import { UsersModule } from '../users/users.module';
 import { AgentModule } from '../agent/agent.module';
 import { AuditTrailModule } from '../audit-trail/audit-trail.module';
+import { PetitionModule } from '../petition/petition.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule, UsersModule, AgentModule, AuditTrailModule],
+  imports: [SequelizeModule.forFeature([AdminModel]), EmailModule, CacheStoreModule, UsersModule, AgentModule, AuditTrailModule, PetitionModule],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository],
   exports: [AdminService]
