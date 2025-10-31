@@ -42,6 +42,10 @@ export class PetitionStageModel extends Model<PetitionStageModel> {
     @AllowNull(true)
     @Column(DataType.DATE)
     completedAt?: Date;
+
+    @AllowNull(true)
+    @Column
+    weeklyReviewFile: string;
   
     @BelongsTo(() => PetitionModel)
     petition!: PetitionModel;

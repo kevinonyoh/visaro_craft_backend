@@ -91,5 +91,4 @@ export class AgentController {
   async payoutMetrics(@Agent() agent:IAgent){
     return await this.agentService.findPayoutMetric(agent);
   }
-
 }

@@ -48,3 +48,4 @@ export class UpdatePetitionTimelineDto{
     @IsOptional()
     petitionTimeline: IPetitionTimeline;
 }
+

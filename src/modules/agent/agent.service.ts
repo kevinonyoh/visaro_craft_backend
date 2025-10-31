@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/com
 import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateStatusPayoutDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { AgentsRepository } from './repositories/agent.repository';
-import { Transaction } from 'sequelize';
+import { Sequelize, Transaction, col, fn } from 'sequelize';
 import { EmailService } from 'src/shared/notification/email/email.service';
 import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import * as helpers from "src/common/utils/helper";
@@ -18,6 +18,9 @@ import { IPaymentType } from '../payment/interface/payment.interface';
 import { IAdmin } from '../admin/interfaces/admin.interface';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { UsersService } from '../users/users.service';
+import { availableBalance, totalPayout, totalReferUser, totalRewardEarned } from 'src/shared/database/raw-queries/literals';
+import { AgentTransactionModel } from './model/agent-transaction.model';
+import { PetitionModel } from '../petition/model/petition.model';
 
 
 @Injectable()
@@ -258,8 +261,76 @@ async updatePayoutRequestStatus(admin: IAdmin, id: string, data: UpdateStatusPay
     ...data
   } 
 
+  
+
   return await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
 }
 
+
+async getAgentData(){
+
+  const includeOption = {
+    attributes: {
+      include: [
+        [fn('COUNT', col('user.id')), 'totalReferredUsers'],
+
+        [
+          Sequelize.literal(totalRewardEarned),
+          'totalRewardsEarned',
+        ],
+      
+        [
+          Sequelize.literal(totalPayout),
+          'totalPayout'
+        ],
+
+        [
+          Sequelize.literal(availableBalance),
+          'availableBalance'
+        ]
+      ],
+      exclude: ['password', 'pin'],
+    },
+    include: [
+      {
+        model: UsersModel,
+        attributes: [],
+      },
+    ],
+    group: ['AgentsModel.id'],
+    order: [[Sequelize.literal('"totalReferredUsers"'), 'DESC']]
+  }
+
+ return await this.agentsRepository.findAll({}, <unknown>includeOption)
+}
+
+async agentReferUsers(agentId: string){
+  const includeOption = {
+    attributes: {
+      exclude: ['password', 'pin'],
+    },
+    include: [
+      {
+        model: UsersModel,
+        attributes: {
+          exclude: ['password'], 
+        },
+        include: [
+          {
+            model: PetitionModel,
+            attributes: { exclude: [] }, 
+          },
+        ],
+      },
+    ],
+  };
+  
+
+   return await this.agentsRepository.findAll({id: agentId}, <unknown>includeOption);
+}
+
+async findPayout(){
+  return await this.agentTransactionRepository.findAll({});
+}
 
 }

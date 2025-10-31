@@ -12,6 +12,7 @@ import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
 import { AgentService } from '../agent/agent.service';
 import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
+import { Agent } from 'src/common/decorators/agent.decorator';
 
 
 @IsAdmin()
@@ -113,6 +114,27 @@ export class AdminController {
   @ResponseMessage("activities data")
   async getActivities(){
     return await this.auditTrailService.findActivities();
+  }
+
+  @Get("Agent-data")
+  @HttpCode(200)
+  @ResponseMessage("agent payout history")
+  async getAgent(){
+    return await this.agentService.getAgentData();
+  }
+
+  @Get("agent-data/:agentId")
+  @HttpCode(200)
+  @ResponseMessage("Agent data")
+  async getAgentReferUsers(@Param("agentId") agentId: string){
+    return await this.agentService.agentReferUsers(agentId);
+  }
+
+  @Get("agent-payout")
+  @HttpCode(200)
+  @ResponseMessage("Payout details")
+  async getPayout(){
+    return await this.agentService.findPayout();
   }
 
 }
