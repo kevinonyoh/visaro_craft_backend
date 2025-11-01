@@ -10,6 +10,9 @@ import { CacheStoreService } from 'src/shared/cache-store/cache-store.service';
 import { IUser } from './interfaces/user.interface';
 import { AgentService } from '../agent/agent.service';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
+import { Petition } from '../petition/entities/petition.entity';
+import { PetitionModel } from '../petition/model/petition.model';
+import { PetitionStageModel } from '../petition/model/petition-stage.model';
 
 @Injectable()
 export class UsersService {
@@ -120,6 +123,16 @@ export class UsersService {
 
     const includeOption = {
       attributes: { exclude: ['password'] },
+      include: [
+          {
+            model: PetitionModel,
+            include: [
+              {
+                model: PetitionStageModel,
+              }
+            ]
+          }
+      ],
 
       order: [['createdAt', 'DESC']]
     }
@@ -134,4 +147,5 @@ export class UsersService {
       ...user.toJSON()
      }
   }
+
 }
