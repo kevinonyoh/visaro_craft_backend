@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-admin.dto';
+import { CreateAdminDto, ForgetPasswordDto, QueryTransactionDto, ResetForgetPasswordDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -145,6 +145,13 @@ export class AdminController {
   @ResponseMessage("petition timeline update successfully")
   async updatePetitionTimeline(@Param("petitionId") id: string, @Body() body: UpdatePetitionTimelineDto, @TransactionParam() transaction: Transaction){
       return await this.petitionService.updatePetitionTimeline(id, body, transaction);
+  }
+
+  @Get("transaction-history")
+  @HttpCode(200)
+  @ResponseMessage("total transaction history")
+  async getTransactionHistory(@Query() query: QueryTransactionDto){
+    return await this.adminService.findTotalTransactionHistory(query);
   }
 
 }

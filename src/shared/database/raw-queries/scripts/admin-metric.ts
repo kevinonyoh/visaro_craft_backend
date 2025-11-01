@@ -80,3 +80,33 @@ SELECT
     COALESCE((SELECT SUM(amount) FROM agent_transactions WHERE status = 'APPROVED'), 0)
   ) AS available_balance
 `
+
+export const paymentTransactionHistoryQuery = () => `
+SELECT * FROM (
+    SELECT 
+        p.id,
+        p.amount,
+        CONCAT(u.first_name, ' ', u.last_name) AS name,
+        p.payment_option_name::TEXT AS paymentOptionName,
+        'credit' AS type,
+        p.created_at AS date
+    FROM payments AS p
+    JOIN users AS u ON u.id = p.user_id
+    WHERE p.status = 'successful'
+
+    UNION ALL
+
+    SELECT 
+        a.id,
+        a.amount,
+        CONCAT(ag.first_name, ' ', ag.last_name) AS name,
+        'Agent_Payout'::TEXT AS paymentOptionName,
+        'debit' AS type,
+        a.created_at AS date
+    FROM agent_transactions AS a
+    JOIN agents AS ag ON ag.id = a.agent_id
+    WHERE a.status = 'APPROVED'
+) AS transactions
+ORDER BY transactions.date DESC
+LIMIT :limit OFFSET :offset;
+`;

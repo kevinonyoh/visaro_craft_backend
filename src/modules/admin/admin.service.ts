@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateAdminDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-admin.dto';
+import { CreateAdminDto, ForgetPasswordDto, QueryTransactionDto, ResetForgetPasswordDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminRepository } from './repositories/admin.repository';
 import * as helpers from "src/common/utils/helper";
@@ -13,7 +13,7 @@ import { AgentTransactionRepository } from '../agent/repositories/Agent-transact
 import queryRunner from 'src/shared/database/raw-queries/query-runner';
 import { IStatus } from '../payment/interface/payment.interface';
 import { IAgentTransactionStatus } from '../agent/interfaces/agent.interface';
-import { adminAgentQuery, adminDashboardQuery, adminPetitionQuery, adminUserQuery, adminfinancialQuery } from 'src/shared/database/raw-queries/scripts/admin-metric';
+import { adminAgentQuery, adminDashboardQuery, adminPetitionQuery, adminUserQuery, adminfinancialQuery, paymentTransactionHistoryQuery } from 'src/shared/database/raw-queries/scripts/admin-metric';
 
 @Injectable()
 export class AdminService {
@@ -122,6 +122,19 @@ export class AdminService {
     ...result
    }
  }
+
+ async findTotalTransactionHistory(query: QueryTransactionDto){
+
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 50;
+  const offset = (page - 1) * limit;
+
+  const result =  await queryRunner<any[]>(paymentTransactionHistoryQuery, {limit, offset});
+
+  return {
+    data: result
+  }
+}
 
  
  

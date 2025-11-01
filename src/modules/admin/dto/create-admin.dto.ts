@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { IAgentTransactionStatus } from "src/modules/agent/interfaces/agent.interface";
 
 export class CreateAdminDto {}
@@ -27,3 +27,15 @@ export class ResetForgetPasswordDto{
 
 }
 
+
+export class QueryTransactionDto{
+
+    @IsNumber()
+    @IsOptional()
+    page: number;
+
+    @IsNumber()
+    @IsOptional()
+    limit: number;
+
+}

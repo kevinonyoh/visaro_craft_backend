@@ -22,6 +22,7 @@ import { availableBalance, totalPayout, totalReferUser, totalRewardEarned } from
 import { AgentTransactionModel } from './model/agent-transaction.model';
 import { PetitionModel } from '../petition/model/petition.model';
 import { PetitionStageModel } from '../petition/model/petition-stage.model';
+import { paymentTransactionHistoryQuery } from 'src/shared/database/raw-queries/scripts/admin-metric';
 
 
 @Injectable()
