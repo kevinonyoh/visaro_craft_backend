@@ -15,6 +15,7 @@ import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { Agent } from 'src/common/decorators/agent.decorator';
 import { UpdatePetitionTimelineDto } from '../petition/dto/create-petition.dto';
 import { PetitionService } from '../petition/petition.service';
+import { GetoAuditTrailDto } from '../audit-trail/dto/create-audit-trail.dto';
 
 
 @IsAdmin()
@@ -115,8 +116,8 @@ export class AdminController {
   @Get("activities")
   @HttpCode(200)
   @ResponseMessage("activities data")
-  async getActivities(){
-    return await this.auditTrailService.findActivities();
+  async getActivities(@Query() query: GetoAuditTrailDto){
+    return await this.auditTrailService.findActivities(query);
   }
 
   @Get("Agent-data")
@@ -152,6 +153,13 @@ export class AdminController {
   @ResponseMessage("total transaction history")
   async getTransactionHistory(@Query() query: QueryTransactionDto){
     return await this.adminService.findTotalTransactionHistory(query);
+  }
+
+  @Get("document/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("users document")
+  async getUserDocument(@Param("petitionId") petitionId: string){
+    return await this.petitionService.getDocumentByAdmin(petitionId);
   }
 
 }

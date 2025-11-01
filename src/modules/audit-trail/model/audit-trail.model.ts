@@ -1,4 +1,5 @@
-import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AgentsModel } from "src/modules/agent/model/agent.model";
 
 
 @Table({
@@ -13,6 +14,16 @@ export class ActivitiesModel extends Model<ActivitiesModel>{
     @Default(DataType.UUIDV4)
     @Column(DataType.UUID)
     declare id: string;
+
+    @ForeignKey(() => AgentsModel)
+    @AllowNull(true)
+    @Column(DataType.STRING(128))
+    agentId!: string;
+
+    @AllowNull(true)
+    @Column(DataType.INTEGER)
+    amount: number;
+
     
     @AllowNull(false)
     @Column(DataType.TEXT)

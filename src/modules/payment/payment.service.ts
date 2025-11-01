@@ -81,7 +81,7 @@ export class PaymentService {
 
       const description = `petition ${ paymentJson.name} fee by ${userData["firstName"]} ${userData["lastName"]}`
  
-      await this.auditTrailService.create(description, transaction);
+      await this.auditTrailService.create({description, amount: paymentJson.amount/100 }, transaction);
 
        return await this.paymentRepository.create({...load}, transaction);
    }

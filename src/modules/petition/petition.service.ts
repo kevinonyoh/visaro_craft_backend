@@ -208,4 +208,15 @@ async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transa
   }
 
 
+  async getDocumentByAdmin(petitionId: string){
+     const includeOption = {
+      include: [
+        {
+          model: PetitionModel
+        }
+      ]
+     }
+     return await this.documentRepository.findAll({petitionId}, <unknown>includeOption);
+  }
+
 }

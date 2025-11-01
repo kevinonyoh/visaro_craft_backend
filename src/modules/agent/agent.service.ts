@@ -184,7 +184,7 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
 
    const description = `${agent["firstName"]} ${agent["lastName"]}: New reward unlock`;
  
-   await this.auditTrailService.create(description);
+   await this.auditTrailService.create({description, amount: rewardAmount});
 
 }
 
@@ -227,7 +227,7 @@ async requestPayment(agent: IAgent, data: AgentPaymentRequestDto, transaction: T
 
   const description = `Payout request from ${agentData["firstName"]} ${agentData["lastName"]}`;
  
-  await this.auditTrailService.create(description, transaction);
+  await this.auditTrailService.create({description, amount}, transaction);
 
 
   return await this.agentTransactionRepository.create(payload, transaction);
