@@ -41,11 +41,15 @@ export class AgentService {
 
 
   async create(data: CreateAgentDto, transation: Transaction) {
-    const { password, email, firstName, pin, ...rest} = data;
+    const { password, email, firstName, username, pin, ...rest} = data;
 
     const user = await this.agentsRepository.findOne({email});
 
     if(user) throw new BadRequestException("email already exist");
+
+    const usernameData = await this.agentsRepository.findOne({username});
+
+    if(usernameData) throw new BadRequestException("username already exist");
 
     const salt = await bcrypt.genSalt();
 
