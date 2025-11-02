@@ -74,7 +74,7 @@ export class AgentService {
 
    const description = `New Agent: ${userData["firstName"]} ${userData["lastName"]}`
  
-   await this.auditTrailService.create(description, transation);
+   await this.auditTrailService.create({description}, transation);
 
    return userData;
  }

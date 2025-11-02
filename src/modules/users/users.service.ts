@@ -57,7 +57,7 @@ export class UsersService {
 
     const description = `New User: ${firstName} ${rest["lastName"]}`
  
-    await this.auditTrailService.create(description, transation);
+    await this.auditTrailService.create({description}, transation);
 
     return userData;
   }
