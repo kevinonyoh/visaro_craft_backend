@@ -301,11 +301,6 @@ async getAgentData(){
     include: [
       {
         model: UsersModel,
-        include: [
-          {
-            model: AgentRewardsModel
-          }
-        ],
         attributes: [],
       },
     ],
