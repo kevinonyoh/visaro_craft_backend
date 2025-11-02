@@ -60,6 +60,7 @@ export class AgentService {
     const payload = {
      ...rest,
      firstName,
+     username,
      password: hashPassword,
      pin: hashPin,
      email
