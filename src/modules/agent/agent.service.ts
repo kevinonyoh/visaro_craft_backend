@@ -332,6 +332,9 @@ async agentReferUsers(agentId: string){
             ],
             attributes: { exclude: [] }, 
           },
+          {
+            model: AgentRewardsModel
+          }
         ],
       },
     ],
@@ -344,5 +347,6 @@ async agentReferUsers(agentId: string){
 async findPayout(){
   return await this.agentTransactionRepository.findAll({});
 }
+
 
 }
