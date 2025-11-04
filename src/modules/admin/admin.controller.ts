@@ -13,7 +13,7 @@ import { AgentService } from '../agent/agent.service';
 import { UpdateStatusPayoutDto } from '../agent/dto/create-agent.dto';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { Agent } from 'src/common/decorators/agent.decorator';
-import { UpdatePetitionTimelineDto } from '../petition/dto/create-petition.dto';
+import { MarkPetitionTimelineDto, UpdatePetitionTimelineDto } from '../petition/dto/create-petition.dto';
 import { PetitionService } from '../petition/petition.service';
 import { GetoAuditTrailDto } from '../audit-trail/dto/create-audit-trail.dto';
 
@@ -141,12 +141,28 @@ export class AdminController {
     return await this.agentService.findPayout();
   }
 
-  @Put("update-petition-timeline/:petitionId")
+  @Put("update-petition-review-document/:petitionId")
   @HttpCode(200)
   @ResponseMessage("petition timeline update successfully")
   async updatePetitionTimeline(@Param("petitionId") id: string, @Body() body: UpdatePetitionTimelineDto, @TransactionParam() transaction: Transaction){
       return await this.petitionService.updatePetitionTimeline(id, body, transaction);
   }
+
+  @Put("mark-petition-timeline/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("petition timeline update successfully")
+  async markPetitionTimeline(@Param("petitionId") id: string, @Body() body: MarkPetitionTimelineDto, @TransactionParam() transaction: Transaction){
+    return await this.petitionService.markPetitionTimeline(id, body, transaction);
+  }
+
+  @Put("unmark-petition-timeline/:petitionId")
+  @HttpCode(200)
+  @ResponseMessage("petition timeline update successfully")
+  async unmarkPetitionTimeline(@Param("petitionId") id: string, @Body() body: MarkPetitionTimelineDto, @TransactionParam() transaction: Transaction){
+    return await this.petitionService.unmarkPetitionTimeline(id, body, transaction);
+  }
+
+
 
   @Get("transaction-history")
   @HttpCode(200)

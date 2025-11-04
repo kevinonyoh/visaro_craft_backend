@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -60,4 +60,10 @@ export class UsersController {
     return await this.usersService.updateProfile(user, body, transaction);
   }
 
+  @Put("update-password")
+  @HttpCode(200)
+  @ResponseMessage("agent password updated successfully")
+  async updatePassword(@User() user: IUser, @Body() body: changePasswordDto, @TransactionParam() transaction: Transaction){
+    return await this.usersService.updatePassword(user, body, transaction);
+  }
 }

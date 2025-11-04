@@ -55,3 +55,9 @@ export class UpdatePetitionTimelineDto{
 
 }
 
+export class MarkPetitionTimelineDto{
+    @IsNumber()
+    @IsNotEmpty()
+    weekNumber: number;
+}
+

@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { Transaction } from 'sequelize';
@@ -148,4 +148,24 @@ export class UsersService {
      }
   }
 
+  async updatePassword(user: IUser, data: changePasswordDto, transaction: Transaction){
+    const {oldPassword, newPassword} = data;
+  
+    const userData = await this.usersRepository.findOne({id: user.id});
+  
+    const comparePassword = bcrypt.compareSync(oldPassword, userData.password);
+  
+    if (!comparePassword) throw new BadRequestException('your old password is incorrect');
+  
+    const salt = await bcrypt.genSalt();
+  
+    const hashPassword = await bcrypt.hash(newPassword, salt);
+  
+   const userJson = await this.usersRepository.update({id: user.id}, {password: hashPassword}, transaction);
+  
+   return {
+    ...userJson.toJSON()
+   }
+    
+  }
 }

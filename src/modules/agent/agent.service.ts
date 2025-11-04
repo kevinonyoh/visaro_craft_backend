@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateStatusPayoutDto } from './dto/create-agent.dto';
+import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateAgentDataDto, UpdateStatusPayoutDto, changeBankDto, changePasswordDto, changePinDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { AgentsRepository } from './repositories/agent.repository';
 import { Sequelize, Transaction, col, fn } from 'sequelize';
@@ -348,5 +348,66 @@ async findPayout(){
   return await this.agentTransactionRepository.findAll({});
 }
 
+
+async updateProfile(agent: IAgent, data: UpdateAgentDataDto, transaction: Transaction){
+  return await this.agentsRepository.update({id: agent.id}, {...data}, transaction)
+}
+
+async updatePassword(agent: IAgent, data: changePasswordDto, transaction: Transaction){
+  const {oldPassword, newPassword} = data;
+
+  const agentData = await this.agentsRepository.findOne({id: agent.id});
+
+  const comparePassword = bcrypt.compareSync(oldPassword, agentData.password);
+
+  if (!comparePassword) throw new BadRequestException('your old password is incorrect');
+
+  const salt = await bcrypt.genSalt();
+
+  const hashPassword = await bcrypt.hash(newPassword, salt);
+
+ const agentJson = await this.agentsRepository.update({id: agent.id}, {password: hashPassword}, transaction);
+
+ return {
+  ...agentJson.toJSON()
+ }
+  
+}
+
+async updatePin(agent: IAgent, data: changePinDto, transaction: Transaction){
+   const {pin, password} = data;
+
+   const agentData = await this.agentsRepository.findOne({id: agent.id});
+
+   const comparePassword = bcrypt.compareSync(password, agentData.password);
+ 
+   if (!comparePassword) throw new BadRequestException('your password is incorrect');
+ 
+   const salt = await bcrypt.genSalt();
+ 
+   const hashPin = await bcrypt.hash(pin, salt);
+ 
+  const agentJson = await this.agentsRepository.update({id: agent.id}, {pin: hashPin}, transaction);
+ 
+  return {
+   ...agentJson.toJSON()
+  } 
+}
+
+async updateBank(agent: IAgent, data: changeBankDto, transaction: Transaction){
+  const {pin, bank} = data;
+
+  const agentData = await this.agentsRepository.findOne({id: agent.id});
+
+  const comparePassword = bcrypt.compareSync(pin, agentData.pin);
+
+  if (!comparePassword) throw new BadRequestException('your pin is incorrect');
+
+  const agentJson = await this.agentsRepository.update({id: agent.id}, {bank}, transaction);
+
+  return {
+    ...agentJson.toJSON()
+  }
+}
 
 }

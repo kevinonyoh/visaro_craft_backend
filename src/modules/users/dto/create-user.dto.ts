@@ -70,3 +70,12 @@ export class UploadCVDto{
 }
 
 
+export class changePasswordDto{
+    @IsString()
+    @IsNotEmpty()
+    oldPassword: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    newPassword: string;
+  }

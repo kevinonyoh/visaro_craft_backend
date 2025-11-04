@@ -53,6 +53,10 @@ export class AgentsModel extends Model<AgentsModel> {
     @Column
     pin!: string;
 
+    @AllowNull(true)
+    @Column
+    profilePicture: string;
+
     @HasMany(()=> UsersModel)
     user: UsersModel;
   

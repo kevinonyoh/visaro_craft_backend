@@ -94,3 +94,44 @@ export class UpdateStatusPayoutDto{
   status: IAgentTransactionStatus; 
 
 }
+
+export class UpdateAgentDataDto{
+  @IsString()
+  @IsOptional()
+  profilePicture: string;
+
+  @IsString()
+  @IsOptional()
+  username: string;
+}
+
+export class changePasswordDto{
+  @IsString()
+  @IsNotEmpty()
+  oldPassword: string;
+
+  @IsString()
+  @IsNotEmpty()
+  newPassword: string;
+}
+
+export class changePinDto{
+  @IsString()
+  @IsNotEmpty()
+  pin: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+
+export class changeBankDto{
+  @ValidateNested()
+  @Type(() => AgentBankDto)
+  bank: AgentBankDto;
+
+  @IsString()
+  @IsNotEmpty()
+  pin: string;
+}

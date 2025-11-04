@@ -25,7 +25,7 @@ import { Transaction } from "sequelize";
       }
 
       @SubscribeMessage('join_chat')
-      handleJoinChat(@ConnectedSocket() client: Socket,@MessageBody() body: JoinRoomDto) {
+      handleJoinChat(@ConnectedSocket() client: Socket, @MessageBody() body: JoinRoomDto) {
 
         const roomName = `chat_${body.userId}_${body.adminId}`;
         

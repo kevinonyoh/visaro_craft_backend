@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { CreatePetitionDto, DocumentsDto, QueryPetitionDto, UpdatePetitionStatusDto, UpdatePetitionTimelineDto } from './dto/create-petition.dto';
+import { CreatePetitionDto, DocumentsDto, MarkPetitionTimelineDto, QueryPetitionDto, UpdatePetitionStatusDto, UpdatePetitionTimelineDto } from './dto/create-petition.dto';
 import { UpdatePetitionDto } from './dto/update-petition.dto';
 import { IUser } from '../users/interfaces/user.interface';
 import { PetitionRepository } from './repositories/petition.repository';
@@ -190,22 +190,22 @@ async activatePetition(user: IUser, transaction:Transaction){
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
   const {weekNumber, weeklyReviewFile} = data;
   
-  await this.petitionStageRepository.update({weekNumber, petitionId: id}, {weeklyReviewFile, status: "COMPLETE"}, transaction);
+  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {weeklyReviewFile}, transaction);
   
-  const newWeek = weekNumber+1;
-
-  const includeOption = {
-    include: [
-      {
-        model: PetitionStageModel,
-      },
-    ]
   }
 
-  if(newWeek <= 5)  await this.petitionStageRepository.update({weekNumber: newWeek, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
+async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transaction: Transaction){
+  const {weekNumber} = data;
 
-  return await this.petitonRepository.findOne({id}, <unknown>includeOption);
-  }
+  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "COMPLETE"}, transaction);
+}
+
+async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transaction: Transaction){
+   const {weekNumber} = data;
+
+  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
+}
+  
 
 
   async getDocumentByAdmin(petitionId: string){

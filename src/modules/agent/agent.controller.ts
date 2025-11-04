@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
 import { AgentService } from './agent.service';
-import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto } from './dto/create-agent.dto';
+import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateAgentDataDto, changeBankDto, changePasswordDto, changePinDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -90,5 +90,33 @@ export class AgentController {
   @ResponseMessage("agent payout history")
   async payoutMetrics(@Agent() agent:IAgent){
     return await this.agentService.findPayoutMetric(agent);
+  }
+
+  @Put("update-agent-profile")
+  @HttpCode(200)
+  @ResponseMessage("agent profile updated successfully")
+  async updateAgentProfile(@Agent() agent: IAgent, @Body() body: UpdateAgentDataDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.updateProfile(agent, body, transaction);
+  }
+
+  @Put("update-password")
+  @HttpCode(200)
+  @ResponseMessage("agent password updated successfully")
+  async updatePassword(@Agent() agent: IAgent, @Body() body: changePasswordDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.updatePassword(agent, body, transaction);
+  }
+  
+  @Put("update-pin")
+  @HttpCode(200)
+  @ResponseMessage("agent pin updated successfully")
+  async updatePin(@Agent() agent: IAgent, @Body() body: changePinDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.updatePin(agent, body, transaction);
+  }
+
+  @Put("update-bank")
+  @HttpCode(200)
+  @ResponseMessage("agent bank updated successfully")
+  async updateBank(@Agent() agent: IAgent, @Body() body: changeBankDto, @TransactionParam() transaction: Transaction){
+    return await this.agentService.updateBank(agent, body, transaction);
   }
 }
