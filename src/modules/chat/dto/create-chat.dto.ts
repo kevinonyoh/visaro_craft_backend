@@ -19,12 +19,8 @@ export class CreateChatDto {
     message: string;
 }
 
-export class JoinRoomDto {
+export class JoinRoomDto{
     @IsString()
     @IsNotEmpty()
     userId: string;
-
-    @IsString()
-    @IsNotEmpty()
-    adminId: string;
 }

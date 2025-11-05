@@ -88,7 +88,9 @@ export class PetitionService {
     const includeOption = {
       include: [
          {
-           model: PaymentModel
+           model: PaymentModel,
+           where: { status: 'successful' }, 
+           required: false
          },
          {
           model: UsersModel,
@@ -109,7 +111,9 @@ export class PetitionService {
   const includeOption = {
     include: [
        {
-         model: PaymentModel
+         model: PaymentModel,
+         where: { status: 'successful' }, 
+         required: false
        },
        {
         model: UsersModel,
@@ -184,7 +188,6 @@ async activatePetition(user: IUser, transaction:Transaction){
    if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
   return await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
-
   }
 
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
