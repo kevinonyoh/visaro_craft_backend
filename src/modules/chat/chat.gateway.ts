@@ -27,7 +27,7 @@ import { Transaction } from "sequelize";
       @SubscribeMessage('join_chat')
       handleJoinChat(@ConnectedSocket() client: Socket, @MessageBody() body: JoinRoomDto) {
 
-        const roomName = `chat_${body.userId}_${body.adminId}`;
+        const roomName = `chat_${body.userId}`;
         
         client.join(roomName);
        
@@ -40,7 +40,7 @@ import { Transaction } from "sequelize";
 
       @SubscribeMessage("send_message")
       async handleSendMessage(@MessageBody() body: CreateChatDto, @TransactionParam() transaction: Transaction){
-        const roomName = `chat_${body.userId}_${body.adminId}`;
+        const roomName = `chat_${body.userId}`;
        
         const message = await this.chatService.sendMessage(body, transaction);
 
