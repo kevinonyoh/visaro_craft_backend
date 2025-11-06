@@ -6,6 +6,8 @@ import { Transaction } from "sequelize";
 import { PaymentRepository } from "../../repositories/payment.repository";
 import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { AgentService } from "src/modules/agent/agent.service";
+import { EmailService } from "src/shared/notification/email/email.service";
+import { UsersModel } from "src/modules/users/models/users.model";
 
 
 @Injectable()
@@ -14,7 +16,8 @@ export class StripeService{
 
     constructor(
       private readonly paymentRepository: PaymentRepository,
-      private readonly agentService: AgentService
+      private readonly agentService: AgentService,
+      private readonly emailService: EmailService,
       ) {
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
             apiVersion: '2025-09-30.clover'
@@ -42,6 +45,20 @@ export class StripeService{
             const session = event.data.object as Stripe.Checkout.Session;
         
              const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
+
+             const includeOption = {
+              include: [
+                 {
+                   model: UsersModel,
+                   attributes: ['firstName', 'lastName', 'email', 'id']
+                 },
+                
+               ]
+              }
+
+            const user = await this.paymentRepository.findOne({id: payment["id"]}, <unknown>includeOption);
+
+             await this.emailService.paymentConfirmation({email: user["user"].email, firstName: user["user"].firstName});
 
              const { userId, amount,  paymentOptionName} = payment.toJSON();
 

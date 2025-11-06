@@ -117,7 +117,7 @@ export class EmailService {
       await this.mailerService.sendMail({
         to: data.email,
         subject: 'EB-1A Consultation Result – Profile Strengthening Recommended',
-        template: './layouts/consultation-decline',
+        template: './layouts/qualification-not-approved',
         context: {
           ...data,
           title: 'EB-1A Consultation Result',
@@ -143,6 +143,43 @@ export class EmailService {
       });
       
     }
+
+
+    async paymentConfirmation(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: 'Payment Confirmed – Your EB-1A Petition Process Has Begun',
+        template: './layouts/payment-confirmation',
+        context: {
+          ...data,
+          title: 'EB-1A Petition Activated',
+          main: 'Payment Confirmed 🎉',
+          subtitle:
+            'Your EB-1A petition preparation process is now officially activated. We’re ready to begin building your success story.',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:paymentImage',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'paymentImage',
+          },
+        ],
+      });
+      
+    }
+
+
+
+
+
 
     
 }
