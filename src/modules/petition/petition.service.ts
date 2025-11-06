@@ -10,10 +10,11 @@ import { IFindPayment, IPaymentType } from '../payment/interface/payment.interfa
 import { PaymentModel } from '../payment/models/payment.model';
 import { UsersModel } from '../users/models/users.model';
 import { PetitionModel } from './model/petition.model';
-import { IPetitionTimeline } from './interface/petition.interface';
+import { IPetitionStatus, IPetitionTimeline } from './interface/petition.interface';
 import { PetitionStageRepository } from './repositories/Petition-stage.repository';
 import { PetitionStageModel } from './model/petition-stage.model';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
+import { EmailService } from 'src/shared/notification/email/email.service';
 
 
 @Injectable()
@@ -25,7 +26,9 @@ export class PetitionService {
     private readonly paymentService: PaymentService,
     private readonly documentRepository: DocumentRepository,
     private readonly petitionStageRepository: PetitionStageRepository,
-    private readonly auditTrailService: AuditTrailService
+    private readonly auditTrailService: AuditTrailService,
+    private readonly emailService: EmailService,
+
     ){}
 
   async createPetition(user: IUser,data: CreatePetitionDto, transaction: Transaction) {
@@ -61,7 +64,26 @@ export class PetitionService {
   async updatePetitionStatus(id: string, data: UpdatePetitionStatusDto, transaction: Transaction){
     const {petitionStatus} = data;
 
-    return await this.petitonRepository.update({id}, {petitionStatus}, transaction);
+    const statusData = await this.petitonRepository.update({id}, {petitionStatus}, transaction);
+
+    const includeOption = {
+      include: [
+         {
+           model: UsersModel,
+           attributes: ['firstName', 'lastName', 'email', 'id']
+         },
+        
+       ]
+      }
+
+    const user = await this.petitonRepository.findOne({id}, <unknown>includeOption);
+
+
+    if(petitionStatus === IPetitionStatus.APPROVED) await this.emailService.qualificationApproved({email: user["user"].email, firstName: user["user"].firstName})
+
+    if(petitionStatus === IPetitionStatus.DECLINED) await this.emailService.disQualification({email: user["user"].email, firstName: user["user"].firstName});
+
+    return statusData;
   }
 
   async findUserPetition(user: IUser){

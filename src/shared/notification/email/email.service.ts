@@ -79,5 +79,70 @@ export class EmailService {
       });
       
     }
+
+
+    async qualificationApproved(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: '🎉 EB-1A Consultation Qualification Successful!',
+        template: './layouts/qualification-approved',
+        context: {
+          ...data,
+          title: 'EB-1A Consultation Qualification Successful!',
+          main: 'Congratulations, You Passed the EB-1A Consultation Stage 🎉',
+          subtitle:
+            'Your journey toward EB-1A approval officially begins — we’re excited to start building your petition strategy.',
+          text: 'Access Your Client Portal',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:celebrationImage',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'celebration.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png', 
+            cid: 'celebrationImage',
+          },
+        ],
+      });
+      
+    }
+
+
+    async disQualification(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: 'EB-1A Consultation Result – Profile Strengthening Recommended',
+        template: './layouts/consultation-decline',
+        context: {
+          ...data,
+          title: 'EB-1A Consultation Result',
+          main: 'Profile Strengthening Recommended',
+          subtitle:
+            'Your consultation review indicates further development is required before proceeding with your EB-1A petition.',
+          text: 'View Recommendations',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:consultationImage',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'consultation.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'consultationImage',
+          },
+        ],
+      });
+      
+    }
+
     
 }

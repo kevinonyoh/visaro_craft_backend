@@ -11,10 +11,11 @@ import { PetitionStageModel } from './model/petition-stage.model';
 import { PetitionStageRepository } from './repositories/Petition-stage.repository';
 import { PetitionCronService } from './crons/petition-cron.service';
 import { AuditTrailModule } from '../audit-trail/audit-trail.module';
+import { EmailModule } from 'src/shared/notification/email/email.module';
 
 
 @Module({
-  imports: [SequelizeModule.forFeature([PetitionModel, DocumentsModel, PetitionStageModel]), forwardRef(() => PaymentModule), AuditTrailModule],
+  imports: [SequelizeModule.forFeature([PetitionModel, DocumentsModel, PetitionStageModel]), forwardRef(() => PaymentModule), AuditTrailModule, EmailModule],
   controllers: [PetitionController],
   providers: [PetitionService, PetitionRepository, DocumentRepository, PetitionStageRepository, PetitionCronService],
   exports: [PetitionService]
