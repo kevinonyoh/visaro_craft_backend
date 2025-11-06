@@ -187,7 +187,14 @@ async activatePetition(user: IUser, transaction:Transaction){
 
    if(!result) throw new BadRequestException(`payment for petition preparation is required before proceeding to upoad documents`);
 
-  return await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
+   const now = new Date();
+
+  const petitionData = await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
+
+  await this.petitionStageRepository.update({petitionId: petitionData["id"], weekNumber: 1}, {pendingSince: now}, transaction);
+
+  return petitionData
+  
   }
 
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
@@ -200,13 +207,28 @@ async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transa
 async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transaction: Transaction){
   const {weekNumber} = data;
 
-  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "COMPLETE"}, transaction);
+
+  const weekPetitionStage = await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "COMPLETE"}, transaction);
+
+  const nextWeek = weekNumber+1;
+
+  const now = new Date();
+
+  if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: now}, transaction);
+
+  return weekPetitionStage;
 }
 
 async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transaction: Transaction){
    const {weekNumber} = data;
 
-  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
+   const weekPetitionStage = await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
+
+  const nextWeek = weekNumber+1;
+
+  if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: null}, transaction);
+
+  return weekPetitionStage;
 }
   
 

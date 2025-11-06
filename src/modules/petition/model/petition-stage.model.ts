@@ -44,6 +44,10 @@ export class PetitionStageModel extends Model<PetitionStageModel> {
     completedAt?: Date;
 
     @AllowNull(true)
+    @Column(DataType.DATE)
+    pendingSince?: Date;
+
+    @AllowNull(true)
     @Column
     weeklyReviewFile: string;
   

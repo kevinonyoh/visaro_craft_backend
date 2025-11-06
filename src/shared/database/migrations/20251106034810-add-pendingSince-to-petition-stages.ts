@@ -3,10 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    // await queryInterface.addColumn("agents", "profile_picture", {
-    //   type: Sequelize.STRING,
-    //   allowNull: true,
-    // });
+    await queryInterface.renameColumn('petition_stages', 'pendingSince', 'pending_since');
   },
 
   async down (queryInterface, Sequelize) {

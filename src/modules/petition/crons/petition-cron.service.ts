@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { PetitionStageRepository } from "../repositories/Petition-stage.repository";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { Op } from "sequelize";
+import { PetitionStageRepository } from "../repositories/Petition-stage.repository";
 import { PetitionRepository } from "../repositories/petition.repository";
 
 @Injectable()
@@ -11,40 +11,31 @@ export class PetitionCronService {
   constructor(
     private readonly petitionStageRepository: PetitionStageRepository,
     private readonly petitionRepository: PetitionRepository
-  ){}
+  ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handlePetitionTracking() {
-    this.logger.debug('Running daily petition status checker...');
+    this.logger.debug("Running daily petition stage tracker...");
 
-    const newDate = new Date();
-
-    const sevenDaysAgo = new Date(newDate);
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
     
-    await this.updateWeekOnePetition(sevenDaysAgo, newDate);
+    const pendingStages = await this.petitionStageRepository.findAll({status: "PENDING", pendingSince: { [Op.lte]: sevenDaysAgo }});
 
-  }
 
-  private async updateWeekOnePetition(sevenDaysAgo: any, newDate: any){
-    const weekOneStage = await this.petitionStageRepository.findAll({
-        weekNumber: 1,
-        status: "PENDING",
-        createdAt: {
-            [Op.lte]: sevenDaysAgo,
-          }
-    });
-
-    await this.petitionRepository.update({id: weekOneStage["petitionId"]}, {status: "in_progress"});
-
-    for (const stage of weekOneStage) {
-        await stage.update({
-          status: 'IN_PROGRESS',
-          startedAt: newDate,
+    for (const stage of pendingStages) {
+      await stage.update({
+        status: "IN_PROGRESS",
+        startedAt: now,
       });
 
-       this.logger.log(`Stage ${stage.id} updated to IN_PROGRESS`);
-    }
-  }
+      await this.petitionRepository.update({id: stage.petitionId }, { status: "in_progress" });
 
+      this.logger.log(`Petition ${stage.petitionId} - Week ${stage.weekNumber} moved to IN_PROGRESS`);
+    }
+
+    this.logger.debug(`Total updated stages: ${pendingStages.length}`);
+  
+  }
 }
