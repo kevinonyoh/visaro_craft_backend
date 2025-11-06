@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0; padding:0; font-family:'Raleway', sans-serif; background-color:#f9fafb; color:#1f2937;">
+
+<table class="email-root" width="100%" cellpadding="0" cellspacing="0" style="background:#0e105b; padding:32px 0 0; font-family:'Raleway', sans-serif; margin:0 auto;">
+  <tr>
+    <td align="center">
+      <!-- Container -->
+      <table class="email-container" width="1000" cellpadding="0" cellspacing="0" style="max-width:600px;">
+        
+        <!-- Logo -->
+        <tr>
+          <td align="left" class="logo-cell">
+            <img class="logo-img" src="{{logoUrl}}" alt="Logo" style="width:128px; display:block;">
+          </td>
+        </tr>
+
+        <!-- Spacing -->
+        <tr>
+          <td class="spacer" height="32"></td>
+        </tr>
+
+        <!-- Content Row -->
+        <tr>
+          <td class="content-cell">
+            <table class="content-grid" width="100%" style="max-width:600px; width:100%; cellpadding="0" cellspacing="0">
+              <tr>
+                <!-- Left Column (Text) -->
+                <td class="left-col" width="50%" valign="top" style="text-align:center; padding-bottom:20px;">
+                <h1 class="main-title" style="color:#ffffff; font-weight:bold; font-size:48px; margin:0; text-align:left;">
+                {{main}}
+              </h1>
+
+              <h2 class="subtitle" style="color:#ffffff; font-size:24px; font-weight:600; margin:12px 0; text-align:left;">
+                {{subtitle}}
+              </h2>
+
+              <div class="cta-wrap" style="display:block; text-align:left;">
+                <div class="cta-badge" style="background:#0206b8; padding:8px 16px; border-radius:6px; font-weight:600; font-size:24px; color:#ffffff; box-shadow:0 0 20px #0206b8; width:fit-content;">
+                  {{text}}
+                </div>
+              </div>
+
+                </td>
+
+                <!-- Right Column (Image) -->
+                <td class="right-col" width="50%" valign="middle" style="text-align:center;">
+                  <img class="hero-image" src="{{imageUrl}}" alt="Celebration Image" style="width:480px; max-width:100%; display:block;">
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<div style="max-width:600px; margin:40px auto; background:#ffffff; padding:30px; border-radius:8px;">
