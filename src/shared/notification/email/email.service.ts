@@ -49,16 +49,7 @@ export class EmailService {
       });
     }
 
-    async emailVerification( data: { email: string, firstName: string, code: string; }) {
-      await this.mailerService.sendMail({
-        to: data.email,
-        subject: 'email verification',
-        template: './email-verification',
-        context: {
-          ...data
-        }
-      });
-    }
+
 
     async signUp(data: {email: string, firstName: string}){
       await this.mailerService.sendMail({
@@ -283,7 +274,7 @@ export class EmailService {
         context: {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
-          main: 'Week three success!',
+          main: 'Week four success!',
           subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
@@ -314,7 +305,7 @@ export class EmailService {
         context: {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
-          main: 'Week three success!',
+          main: 'Week five success!',
           subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
@@ -336,4 +327,37 @@ export class EmailService {
 
     }
     
+
+    async emailVerification( data: { email: string, firstName: string, code: string; }) {
+
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Your OTP for Email Verification`,
+        template: './layouts/otp-code',
+        context: {
+          ...data,
+          title: `Your OTP for Email Verification`,
+          main: 'Use This Code to Verify Your Email',
+          subtitle: 'Confirm Your Email',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      });
+
+    
+    }
+
 }
