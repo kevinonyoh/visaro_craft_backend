@@ -194,8 +194,7 @@ export class EmailService {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
           main: 'Week one success!',
-          subtitle:
-            'Milestone one accomplished!',
+          subtitle: 'Milestone one accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:happyGirl',
@@ -225,8 +224,7 @@ export class EmailService {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
           main: 'Week two success!',
-          subtitle:
-            'Milestone another accomplished!',
+          subtitle:  'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:happyGirl',
@@ -256,8 +254,7 @@ export class EmailService {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
           main: 'Week three success!',
-          subtitle:
-            'Milestone another accomplished!',
+          subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:happyGirl',
@@ -287,8 +284,7 @@ export class EmailService {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
           main: 'Week three success!',
-          subtitle:
-            'Milestone another accomplished!',
+          subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:happyGirl',
@@ -319,8 +315,7 @@ export class EmailService {
           ...data,
           title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
           main: 'Week three success!',
-          subtitle:
-            'Milestone another accomplished!',
+          subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:happyGirl',
