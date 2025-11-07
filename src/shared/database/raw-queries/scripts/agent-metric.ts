@@ -11,12 +11,13 @@ SELECT
 
 
 export const totalEarningAndWithdrawQuery = () => `SELECT
-  COALESCE((
-    SELECT SUM(ar.reward_amount)
-    FROM "agent-rewards" AS ar
-    INNER JOIN users AS u ON u.id = ar.user_id
-    WHERE ar.status = 'COMPLETED' AND u.agent_id = :agentId
-  ), 0) AS total_earnings,
+COALESCE((
+  SELECT SUM(ar.reward_amount)
+  FROM "agent-rewards" AS ar
+  INNER JOIN users AS u ON u.id = ar.user_id
+  WHERE ar.status IN ('IN_PROGRESS', 'COMPLETED')
+    AND u.agent_id = :agentId
+), 0) AS total_earnings,
 
   COALESCE((
     SELECT SUM(at.amount)
