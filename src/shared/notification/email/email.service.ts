@@ -49,6 +49,16 @@ export class EmailService {
       });
     }
 
+    async emailVerification( data: { email: string, firstName: string, code: string; }) {
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: 'email verification',
+        template: './email-verification',
+        context: {
+          ...data
+        }
+      });
+    }
 
     async signUp(data: {email: string, firstName: string}){
       await this.mailerService.sendMail({
@@ -173,6 +183,9 @@ export class EmailService {
           },
         ],
       });
+
+
+
       
     }
 

@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { Transaction } from 'sequelize';
@@ -13,6 +13,7 @@ import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { Petition } from '../petition/entities/petition.entity';
 import { PetitionModel } from '../petition/model/petition.model';
 import { PetitionStageModel } from '../petition/model/petition-stage.model';
+
 
 @Injectable()
 export class UsersService {
@@ -61,6 +62,38 @@ export class UsersService {
 
     return userData;
   }
+
+  async sendEmailVerficationOtp(data: SendOtpDto){
+    const user = await this.usersRepository.findOne({email: data["email"]});
+
+    if(!user) throw new BadRequestException("user does not exist");
+
+    const code = helpers.generateOtp();
+
+    await this.cacheStoreService.set(code, data.email);
+
+    const payload = {
+      email: data["email"],
+      firstName: user["firstName"],
+      code
+    }
+
+    await this.emailService.emailVerification(payload);
+  }
+
+  async VerifyEmail(data: EmailVerifyDto, transaction: Transaction){
+    const { email, otp } = data;
+
+    const userEmail = await this.cacheStoreService.get(otp);
+    
+    if (userEmail !== email) throw new BadRequestException('Invalid otp');
+
+    return await this.usersRepository.update({email}, {isEmailVerified: true, isActivated: true}, transaction);
+  }
+
+
+
+
 
   async forgotpassword(data: ForgetPasswordDto){
    const {email} = data;

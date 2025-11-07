@@ -27,6 +27,22 @@ export class CreateUserDto {
     countryCode: string;
 }
 
+export class SendOtpDto {    
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+}
+
+export class EmailVerifyDto{
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    otp: string;
+}
+
 export class AgentQueryDto{
     @IsString()
     @IsOptional()

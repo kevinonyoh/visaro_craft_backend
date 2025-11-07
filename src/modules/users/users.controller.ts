@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AgentQueryDto, CreateUserDto, ForgetPasswordDto, ResetForgetPasswordDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
+import { AgentQueryDto, CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -62,8 +62,25 @@ export class UsersController {
 
   @Put("update-password")
   @HttpCode(200)
-  @ResponseMessage("agent password updated successfully")
+  @ResponseMessage("user password updated successfully")
   async updatePassword(@User() user: IUser, @Body() body: changePasswordDto, @TransactionParam() transaction: Transaction){
     return await this.usersService.updatePassword(user, body, transaction);
   }
+
+  @Public()
+  @Post('verify-email/send-otp')
+  @HttpCode(200)
+  @ResponseMessage('Otp sent successfully')
+  async resendVerifyEmailOtp(@Body() body: SendOtpDto) {
+    return await this.usersService.sendEmailVerficationOtp(body);
+  }
+
+  @Public()
+  @Post('verify-email')
+  @HttpCode(200)
+  @ResponseMessage('Email verified successfully. Account activated.')
+  async verifyEmail(@Body() body: EmailVerifyDto, @TransactionParam() transaction: Transaction) {
+    return await this.usersService.VerifyEmail(body, transaction);
+  }
+
 }

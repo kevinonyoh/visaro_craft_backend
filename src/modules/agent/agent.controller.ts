@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put } from '@nestjs/common';
 import { AgentService } from './agent.service';
-import { AgentPaymentRequestDto, CreateAgentDto, ForgetPasswordDto, ResetForgetPasswordDto, UpdateAgentDataDto, changeBankDto, changePasswordDto, changePinDto } from './dto/create-agent.dto';
+import { AgentPaymentRequestDto, CreateAgentDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UpdateAgentDataDto, changeBankDto, changePasswordDto, changePinDto } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -118,5 +118,21 @@ export class AgentController {
   @ResponseMessage("agent bank updated successfully")
   async updateBank(@Agent() agent: IAgent, @Body() body: changeBankDto, @TransactionParam() transaction: Transaction){
     return await this.agentService.updateBank(agent, body, transaction);
+  }
+
+  @Public()
+  @Post('verify-email/send-otp')
+  @HttpCode(200)
+  @ResponseMessage('Otp sent successfully')
+  async resendVerifyEmailOtp(@Body() body: SendOtpDto) {
+    return await this.agentService.sendEmailVerficationOtp(body);
+  }
+
+  @Public()
+  @Post('verify-email')
+  @HttpCode(200)
+  @ResponseMessage('Email verified successfully. Account activated.')
+  async verifyEmail(@Body() body: EmailVerifyDto, @TransactionParam() transaction: Transaction) {
+    return await this.agentService.VerifyEmail(body, transaction);
   }
 }

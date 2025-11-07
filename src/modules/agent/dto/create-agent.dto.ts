@@ -105,6 +105,22 @@ export class UpdateAgentDataDto{
   username: string;
 }
 
+export class SendOtpDto {    
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+
+export class EmailVerifyDto{
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  otp: string;
+}
+
 export class changePasswordDto{
   @IsString()
   @IsNotEmpty()
