@@ -222,7 +222,7 @@ async activatePetition(user: IUser, transaction:Transaction){
 async updatePetitionTimeline(id: string, data: UpdatePetitionTimelineDto, transaction: Transaction){
   const {weekNumber, weeklyReviewFile} = data;
   
-  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {weeklyReviewFile}, transaction);
+  return await this.petitionStageRepository.update({weekNumber, petitionId: id}, {weeklyReviewFile, status: "IN_PROGRESS"}, transaction);
   
   }
 
