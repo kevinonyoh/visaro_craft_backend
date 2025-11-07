@@ -182,17 +182,163 @@ export class EmailService {
             cid: 'paymentImage',
           },
         ],
-      });
-
-
-
-      
+      });      
     }
 
+    async weekOneCompleted(data: {email: string, firstName: string, weekNumber: number}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        template: './layouts/weekOneCompleted',
+        context: {
+          ...data,
+          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          main: 'Week one success!',
+          subtitle:
+            'Milestone one accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+    }
 
+    async weekTwoCompleted(data: {email: string, firstName: string, weekNumber: number}){
 
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        template: './layouts/weekTwoCompleted',
+        context: {
+          ...data,
+          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          main: 'Week two success!',
+          subtitle:
+            'Milestone another accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
 
+    }
 
+    async weekThreeCompleted(data: {email: string, firstName: string, weekNumber: number}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        template: './layouts/weekThreeCompleted',
+        context: {
+          ...data,
+          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          main: 'Week three success!',
+          subtitle:
+            'Milestone another accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+    }
 
+    async weekFourCompleted(data: {email: string, firstName: string, weekNumber: number}){
+      
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        template: './layouts/weekFourCompleted',
+        context: {
+          ...data,
+          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          main: 'Week three success!',
+          subtitle:
+            'Milestone another accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+
+    }
+
+    async weekFiveCompleted(data: {email: string, firstName: string, weekNumber: number}){
+
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        template: './layouts/weekFiveCompleted',
+        context: {
+          ...data,
+          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          main: 'Week three success!',
+          subtitle:
+            'Milestone another accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+
+    }
     
 }

@@ -238,6 +238,26 @@ async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transactio
 
   if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: now}, transaction);
 
+  const includeOption = {
+    include: [
+       {
+         model: UsersModel,
+         attributes: ['firstName', 'lastName', 'email', 'id']
+       },
+      
+     ]
+    }
+
+  const user = await this.petitonRepository.findOne({id: weekPetitionStage["petitionId"] }, <unknown>includeOption);
+
+  const payload = {
+      email: user["user"].email,
+      firstName: user["user"].firstName,
+      weekNumber
+  }
+
+  await this.weekMailSender(payload);
+
   return weekPetitionStage;
 }
 
@@ -264,6 +284,27 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
       ]
      }
      return await this.documentRepository.findAll({petitionId}, <unknown>includeOption);
+  }
+
+
+  async weekMailSender(data: {weekNumber: number, email: string, firstName: string}){
+    const {weekNumber, email, firstName} = data;
+
+    const payload = {
+      weekNumber, 
+      email,
+      firstName
+    }
+
+    if(weekNumber === 1) await this.emailService.weekOneCompleted(payload);
+
+    if(weekNumber === 2) await this.emailService.weekTwoCompleted(payload);
+
+    if(weekNumber === 3) await this.emailService.weekThreeCompleted(payload);
+
+    if(weekNumber === 4) await this.emailService.weekFourCompleted(payload);
+
+    if(weekNumber === 5) await this.emailService.weekFiveCompleted(payload);
   }
 
 }

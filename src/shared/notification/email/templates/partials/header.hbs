@@ -7,58 +7,172 @@
 </head>
 <body style="margin:0; padding:0; font-family:'Raleway', sans-serif; background-color:#f9fafb; color:#1f2937;">
 
-<table class="email-root" width="100%" cellpadding="0" cellspacing="0" style="background:#0e105b; padding:32px 0 0; font-family:'Raleway', sans-serif; margin:0 auto;">
+<table
+  class="email-root"
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="background:#0e105b; padding:1rem 0 0; font-family:'Raleway', sans-serif; margin:0 auto;"
+>
   <tr>
     <td align="center">
       <!-- Container -->
-      <table class="email-container" width="1000" cellpadding="0" cellspacing="0" style="max-width:600px;">
-        
+      <table
+        class="email-container"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="max-width:700px; width:100%; padding:0 1rem; margin:0 auto;"
+      >
         <!-- Logo -->
         <tr>
-          <td align="left" class="logo-cell">
-            <img class="logo-img" src="{{logoUrl}}" alt="Logo" style="width:128px; display:block;">
+          <td class="logo-cell" style="text-align:left; padding-bottom:1rem;">
+            <img
+              class="logo-img"
+              src="{{logoUrl}}"
+              alt="Logo"
+              style="display:block; max-width:130px; height:auto;"
+            />
           </td>
-        </tr>
-
-        <!-- Spacing -->
-        <tr>
-          <td class="spacer" height="32"></td>
         </tr>
 
         <!-- Content Row -->
         <tr>
-          <td class="content-cell">
-            <table class="content-grid" width="100%" style="max-width:600px; width:100%; cellpadding="0" cellspacing="0">
+          <td class="content-cell" style="padding:0;">
+            <table
+              class="content-grid"
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              border="0"
+              style="max-width:700px;"
+            >
               <tr>
                 <!-- Left Column (Text) -->
-                <td class="left-col" width="50%" valign="top" style="text-align:center; padding-bottom:20px;">
-                <h1 class="main-title" style="color:#ffffff; font-weight:bold; font-size:48px; margin:0; text-align:left;">
-                {{main}}
-              </h1>
+                <td
+                  class="left-col"
+                  valign="middle"
+                  style="vertical-align:middle; text-align:left; padding-right:1rem; width:100%; max-width:320px;"
+                >
+                  <h1
+                    class="main-title"
+                    style="color:#ffffff; font-weight:bold; font-size:42px; margin:0; line-height:1.2;"
+                  >
+                    {{main}}
+                  </h1>
 
-              <h2 class="subtitle" style="color:#ffffff; font-size:24px; font-weight:600; margin:12px 0; text-align:left;">
-                {{subtitle}}
-              </h2>
+                  <h2
+                    class="subtitle"
+                    style="color:#ffffff; font-size:22px; font-weight:600; margin:12px 0; line-height:1.3;"
+                  >
+                    {{subtitle}}
+                  </h2>
 
-              <div class="cta-wrap" style="display:block; text-align:left;">
-                <div class="cta-badge" style="background:#0206b8; padding:8px 16px; border-radius:6px; font-weight:600; font-size:24px; color:#ffffff; box-shadow:0 0 20px #0206b8; width:fit-content;">
-                  {{text}}
-                </div>
-              </div>
-
+                  <div class="cta-wrap" style="margin-top:10px;">
+                    <div
+                      class="cta-badge"
+                      style="background:#0206b8; padding:8px 16px; border-radius:6px; font-weight:600; font-size:20px; color:#ffffff; box-shadow:0 0 20px #0206b8; width:fit-content;"
+                    >
+                      {{text}}
+                    </div>
+                  </div>
                 </td>
 
                 <!-- Right Column (Image) -->
-                <td class="right-col" width="50%" valign="middle" style="text-align:center;">
-                  <img class="hero-image" src="{{imageUrl}}" alt="Celebration Image" style="width:480px; max-width:100%; display:block;">
+                <td
+                  class="right-col"
+                  valign="middle"
+                  style="vertical-align:middle; text-align:center; width:100%; max-width:280px;"
+                >
+                  <img
+                    class="hero-image"
+                    src="{{imageUrl}}"
+                    alt="Celebration Image"
+                    style="display:block; max-width:280px; height:auto;"
+                  />
                 </td>
               </tr>
             </table>
           </td>
         </tr>
-
       </table>
     </td>
   </tr>
 </table>
-<div style="max-width:600px; margin:40px auto; background:#ffffff; padding:30px; border-radius:8px;">
+
+<!-- Responsive Styles -->
+<style>
+  @media only screen and (max-width: 620px) {
+    .content-grid tr {
+      display: block !important;
+      width: 100% !important;
+    }
+    
+    .left-col,
+    .right-col {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      text-align: center !important;
+      padding: 0 !important;
+    }
+
+    .left-col {
+      padding-bottom: 1.5rem !important;
+    }
+
+    .main-title {
+      font-size: 32px !important;
+      text-align: center !important;
+    }
+
+    .subtitle {
+      font-size: 18px !important;
+      text-align: center !important;
+    }
+
+    .cta-badge {
+      margin: 0 auto !important;
+      font-size: 18px !important;
+      text-align: center !important;
+    }
+
+    .hero-image {
+      margin: 0 auto !important;
+      max-width: 300px !important;
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    .logo-cell {
+      text-align: center !important;
+    }
+
+    .logo-img {
+      margin: 0 auto !important;
+      max-width: 110px !important;
+      height: auto !important;
+    }
+  }
+
+  /* Additional mobile-first improvements */
+  @media only screen and (max-width: 480px) {
+    .main-title {
+      font-size: 28px !important;
+    }
+    
+    .subtitle {
+      font-size: 16px !important;
+    }
+    
+    .cta-badge {
+      font-size: 16px !important;
+      padding: 6px 12px !important;
+    }
+    
+    .email-container {
+      padding: 0 0.5rem !important;
+    }
+  }
+</style>
+ <div style="max-width:700px; margin:40px auto; background:#ffffff; padding: 30px 16px; border-radius:8px;"></div>
