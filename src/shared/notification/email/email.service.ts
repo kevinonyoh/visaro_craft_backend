@@ -337,7 +337,7 @@ export class EmailService {
         context: {
           ...data,
           title: `Your OTP for Email Verification`,
-          main: 'Use This Code to Verify Your Email',
+          main: 'Verify Your Email',
           subtitle: 'Confirm Your Email',
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
