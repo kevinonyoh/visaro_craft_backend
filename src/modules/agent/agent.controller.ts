@@ -9,6 +9,7 @@ import { TransactionParam } from 'src/common/decorators/transaction-param.decora
 import { Agent } from 'src/common/decorators/agent.decorator';
 import { IAgent } from './interfaces/agent.interface';
 import { IsAgent } from 'src/common/decorators/is-agent.decorator';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 
 
@@ -16,7 +17,10 @@ import { IsAgent } from 'src/common/decorators/is-agent.decorator';
 @IsAgent()
 @Controller('agent')
 export class AgentController {
-  constructor(private readonly agentService: AgentService) {}
+  constructor(
+    private readonly agentService: AgentService,
+    private readonly auditTrailService: AuditTrailService
+    ) {}
 
   @Public()
   @Post("create")
@@ -135,4 +139,12 @@ export class AgentController {
   async verifyEmail(@Body() body: EmailVerifyDto, @TransactionParam() transaction: Transaction) {
     return await this.agentService.VerifyEmail(body, transaction);
   }
+
+  @Get("notification")
+  @HttpCode(200)
+  @ResponseMessage("agent notification")
+  async agentNotification(@Agent() agent:IAgent){
+    return await this.auditTrailService.findAgentNotification(agent.id);
+  }
+
 }

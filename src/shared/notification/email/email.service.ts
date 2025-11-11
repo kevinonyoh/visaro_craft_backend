@@ -81,6 +81,65 @@ export class EmailService {
       
     }
 
+    async AgentSignUp(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: '🎉 Welcome to Visaro Craft!',
+        template: './layouts/partnerWelcomeEmail',
+        context: {
+          ...data,
+          title: 'Welcome to Visaro Craft!',
+          main: 'Welcome Aboard 🎉',
+          subtitle: 'Your account has been created successfully.',
+          text: "Let's Get Started",
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:celebrationImage'
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'celebration.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'celebrationImage',
+          },
+        ],
+      });
+      
+    }
+
+    async agentReferral(data: {email: string, firstName: string, fullName: string, userEmail: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: 'Someone just registered using your VisaroCraft referral link.',
+        template: './layouts/partnerReferral',
+        context: {
+          ...data,
+          main: 'Great news! 🎉', 
+         title: 'Lead Details',   
+        subtitle: `Someone just registered using your VisaroCraft referral link.`, 
+        text: 'Check your dashboard for details',
+        logoUrl: 'cid:logoImage',
+        imageUrl: 'cid:celebrationImage'
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'celebration.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'celebrationImage',
+          },
+        ],
+      });
+      
+    }
 
     async qualificationApproved(data: {email: string, firstName: string}){
       await this.mailerService.sendMail({

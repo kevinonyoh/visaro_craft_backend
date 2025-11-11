@@ -8,11 +8,15 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { IUser } from './interfaces/user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuditTrailService } from '../audit-trail/audit-trail.service';
 
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly auditTrailService: AuditTrailService
+    ) {}
 
   @Public()
   @Post("create")
@@ -81,6 +85,13 @@ export class UsersController {
   @ResponseMessage('Email verified successfully. Account activated.')
   async verifyEmail(@Body() body: EmailVerifyDto, @TransactionParam() transaction: Transaction) {
     return await this.usersService.VerifyEmail(body, transaction);
+  }
+
+  @Get("notification")
+  @HttpCode(200)
+  @ResponseMessage("user notification")
+  async agentNotification(@User() user:IUser){
+    return await this.auditTrailService.findAgentNotification(user.id);
   }
 
 }

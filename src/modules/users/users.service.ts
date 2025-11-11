@@ -13,6 +13,7 @@ import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { Petition } from '../petition/entities/petition.entity';
 import { PetitionModel } from '../petition/model/petition.model';
 import { PetitionStageModel } from '../petition/model/petition-stage.model';
+import { INotification } from '../audit-trail/interface/notification.interface';
 
 
 @Injectable()
@@ -31,7 +32,7 @@ export class UsersService {
      const { password, email, firstName, ...rest} = data;
 
      const { agentId } = agent;
-
+     
      const user = await this.usersRepository.findOne({email});
 
      if(user) throw new BadRequestException("email already exist");
@@ -54,8 +55,23 @@ export class UsersService {
 
     await this.emailService.signUp({email, firstName});
 
-    if(agentId) await this.agentService.createAgentReward(userData.id, transation);
+    if(agentId){ 
+     
+      const agentData = await this.agentService.findById(agentId);
 
+      if(!agentData) throw new BadRequestException("Invalid reference link");
+
+      await this.agentService.createAgentReward(userData.id, transation);
+
+      const agentPayload = {
+        email: agentData["email"],
+        firstName: agentData["firstName"],
+        fullName: `${firstName} ${data.lastName}`,
+        userEmail: email
+      }
+
+      await this.emailService.agentReferral(agentPayload);
+    }
     const description = `New User: ${firstName} ${rest["lastName"]}`
  
     await this.auditTrailService.create({description}, transation);
@@ -196,6 +212,15 @@ export class UsersService {
   
    const userJson = await this.usersRepository.update({id: user.id}, {password: hashPassword}, transaction);
   
+   const notification: INotification = {
+    agentId: user.id,
+    recipientType: "USER",
+    title: "change password",
+    message: `you have successfully changed your password`
+  }
+  
+  await this.auditTrailService.createNotification(notification, transaction);
+
    return {
     ...userJson.toJSON()
    }

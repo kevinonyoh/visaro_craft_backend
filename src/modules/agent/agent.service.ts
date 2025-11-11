@@ -23,6 +23,7 @@ import { AgentTransactionModel } from './model/agent-transaction.model';
 import { PetitionModel } from '../petition/model/petition.model';
 import { PetitionStageModel } from '../petition/model/petition-stage.model';
 import { paymentTransactionHistoryQuery } from 'src/shared/database/raw-queries/scripts/admin-metric';
+import { INotification } from '../audit-trail/interface/notification.interface';
 
 
 @Injectable()
@@ -75,6 +76,8 @@ export class AgentService {
    const description = `New Agent: ${userData["firstName"]} ${userData["lastName"]}`
  
    await this.auditTrailService.create({description}, transation);
+
+   await this.emailService.AgentSignUp({email, firstName});
 
    return userData;
  }
@@ -151,6 +154,10 @@ async findByEmail(email: string){
    return await this.agentsRepository.findOne({email})
 }
 
+async findById(id: string){
+  return await this.agentsRepository.findOne({id})
+}
+
 
 async findAgentUsers(agent: IAgent){
   const includeOption = {
@@ -220,6 +227,15 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
  
    await this.auditTrailService.create({description, amount: rewardAmount});
 
+  const notification: INotification = {
+    agentId: agent.id,
+    recipientType: "AGENT",
+    title: "New Reward Earn",
+    message: `Congratulation, you have successfully earn a new reward. Amount: ${rewardAmount}`
+  }
+  
+  await this.auditTrailService.createNotification(notification);
+
 }
 
 async findReferralCounts(agent: IAgent){
@@ -263,6 +279,15 @@ async requestPayment(agent: IAgent, data: AgentPaymentRequestDto, transaction: T
  
   await this.auditTrailService.create({description, amount}, transaction);
 
+  const notification: INotification = {
+    agentId: agent.id,
+    recipientType: "AGENT",
+    title: "payout request",
+    message: `you have successfully initiate your payout request, Amount: ${amount}`
+  }
+  
+  await this.auditTrailService.createNotification(notification, transaction);
+
 
   return await this.agentTransactionRepository.create(payload, transaction);
 }
@@ -297,7 +322,14 @@ async updatePayoutRequestStatus(admin: IAdmin, id: string, data: UpdateStatusPay
     ...data
   } 
 
+  const notification: INotification = {
+    agentId: agentId,
+    recipientType: "AGENT",
+    title: `payout status:  ${data["status"]}`, 
+    message: `your payout status:  ${data["status"]}`
+  }
   
+  await this.auditTrailService.createNotification(notification, transaction);
 
   return await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
 }
@@ -397,6 +429,15 @@ async updatePassword(agent: IAgent, data: changePasswordDto, transaction: Transa
 
  const agentJson = await this.agentsRepository.update({id: agent.id}, {password: hashPassword}, transaction);
 
+ const notification: INotification = {
+  agentId: agent.id,
+  recipientType: "AGENT",
+  title: "change password",
+  message: `you have successfully changed your password`
+}
+
+await this.auditTrailService.createNotification(notification, transaction);
+ 
  return {
   ...agentJson.toJSON()
  }
@@ -417,6 +458,15 @@ async updatePin(agent: IAgent, data: changePinDto, transaction: Transaction){
    const hashPin = await bcrypt.hash(pin, salt);
  
   const agentJson = await this.agentsRepository.update({id: agent.id}, {pin: hashPin}, transaction);
+
+  const notification: INotification = {
+    agentId: agent.id,
+    recipientType: "AGENT",
+    title: "change pin",
+    message: `you have successfully changed your pin`
+  }
+  
+  await this.auditTrailService.createNotification(notification, transaction);
  
   return {
    ...agentJson.toJSON()
@@ -433,6 +483,15 @@ async updateBank(agent: IAgent, data: changeBankDto, transaction: Transaction){
   if (!comparePassword) throw new BadRequestException('your pin is incorrect');
 
   const agentJson = await this.agentsRepository.update({id: agent.id}, {bank}, transaction);
+
+  const notification: INotification = {
+    agentId: agent.id,
+    recipientType: "AGENT",
+    title: "change recipient bank",
+    message: `you have successfully changed your recipient bank`
+  }
+  
+  await this.auditTrailService.createNotification(notification, transaction);
 
   return {
     ...agentJson.toJSON()

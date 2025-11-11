@@ -15,6 +15,7 @@ import { PetitionStageRepository } from './repositories/Petition-stage.repositor
 import { PetitionStageModel } from './model/petition-stage.model';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { EmailService } from 'src/shared/notification/email/email.service';
+import { INotification } from '../audit-trail/interface/notification.interface';
 
 
 @Injectable()
@@ -58,6 +59,15 @@ export class PetitionService {
 
     await this.petitionStageRepository.bulkCreate(petitionStages, transaction);
 
+    const notification: INotification = {
+        userId: user.id,
+        recipientType: "USER",
+        title: "petition created successfully",
+        message: `your ${petitionType} petition was created successfully`
+    }
+
+    await this.auditTrailService.createNotification(notification, transaction);
+
     return {...petitionJson};
   }
 
@@ -77,6 +87,15 @@ export class PetitionService {
       }
 
     const user = await this.petitonRepository.findOne({id}, <unknown>includeOption);
+
+    const notification: INotification = {
+      userId: user["user"].id,
+      recipientType: "USER",
+      title: "Next phase after consultation",
+      message: `your ${user["petitionType"]} petition was ${petitionStatus} after consultation`
+  }
+
+  await this.auditTrailService.createNotification(notification, transaction);
 
 
     if(petitionStatus === IPetitionStatus.APPROVED) await this.emailService.qualificationApproved({email: user["user"].email, firstName: user["user"].firstName})
@@ -214,6 +233,15 @@ async activatePetition(user: IUser, transaction:Transaction){
   const petitionData = await this.petitonRepository.update({userId: user.id}, {isPetitionActivated: true}, transaction);
 
   await this.petitionStageRepository.update({petitionId: petitionData["id"], weekNumber: 1}, {pendingSince: now}, transaction);
+
+  const notification: INotification = {
+    userId: user.id,
+    recipientType: "USER",
+    title: "petition activation status",
+    message: `you have successfully activate your petition. we can now start working on your petition`
+  }
+
+  await this.auditTrailService.createNotification(notification, transaction);
 
   return petitionData
   
