@@ -81,7 +81,7 @@ export class EmailService {
       
     }
 
-    async AgentSignUp(data: {email: string, firstName: string}){
+    async AgentSignUp(data: {email: string}){
       await this.mailerService.sendMail({
         to: data.email,
         subject: '🎉 Welcome to Visaro Craft!',

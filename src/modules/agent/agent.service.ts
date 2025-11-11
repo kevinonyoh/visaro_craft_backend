@@ -77,7 +77,7 @@ export class AgentService {
  
    await this.auditTrailService.create({description}, transation);
 
-   await this.emailService.AgentSignUp({email, firstName});
+   await this.emailService.AgentSignUp({email});
 
    return userData;
  }
