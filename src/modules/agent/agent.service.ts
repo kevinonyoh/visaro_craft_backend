@@ -71,8 +71,6 @@ export class AgentService {
 
     const userData = val.toJSON();
 
-   await this.emailService.signUp({email, firstName});
-
    const description = `New Agent: ${userData["firstName"]} ${userData["lastName"]}`
  
    await this.auditTrailService.create({description}, transation);
