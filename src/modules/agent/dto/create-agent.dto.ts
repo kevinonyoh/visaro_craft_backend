@@ -6,15 +6,11 @@ import { IAgentTransactionStatus } from "../interfaces/agent.interface";
 class AgentBankDto {
     @IsString()
     @IsNotEmpty()
-    name!: string;
+    bankName!: string;
   
     @IsString()
     @IsNotEmpty()
-    accountNumber!: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    accountName!: string;
+    accountEmail!: string;
   }
 
 export class CreateAgentDto {

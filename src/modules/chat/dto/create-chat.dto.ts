@@ -1,18 +1,10 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { SenderType } from "../interface/chat.interface";
 
 export class CreateChatDto {
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     userId: string;
-
-    @IsString()
-    @IsNotEmpty()
-    adminId: string; 
-
-    @IsEnum(SenderType)
-    @IsNotEmpty()
-    senderType: SenderType;
 
     @IsString()
     @IsNotEmpty()
@@ -21,6 +13,6 @@ export class CreateChatDto {
 
 export class JoinRoomDto{
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     userId: string;
 }

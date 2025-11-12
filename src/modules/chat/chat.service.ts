@@ -11,8 +11,11 @@ export class ChatService {
     private readonly chatMessagesRepository: ChatMessagesRepository
    ){}
 
-   async sendMessage(data: CreateChatDto, transaction: Transaction){
-       return await this.chatMessagesRepository.create({...data, isRead: false}, transaction);
+   async sendMessage(data: any, transaction: Transaction){
+       return await this.chatMessagesRepository.create({...data}, transaction);
    }
-   
+
+   async fetchChat(userId: string){
+      return await this.chatMessagesRepository.findAll({userId});
+   }
 }

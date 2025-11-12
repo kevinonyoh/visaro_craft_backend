@@ -1,7 +1,6 @@
 export interface IAgentBank{
     bankName: string;
-    AccountNumber: string;
-    AccountName: string;
+    accountEmail: string;
 }
 
 export interface IAgent {

@@ -22,32 +22,17 @@ export class ChatMessagesModel extends Model<ChatMessagesModel>{
     @Column(DataType.UUID)
     userId: string;
 
-
-    @ForeignKey(() => AdminModel)
-    @AllowNull(false)
-    @Column(DataType.UUID)
-    adminId: string;
-
     @AllowNull(false)
     @Column(DataType.TEXT)
     message: string;
 
     @AllowNull(false)
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    isRead: boolean;
-
-    @AllowNull(false)
     @Column({
       type: DataType.ENUM(...Object.values(SenderType)),
-      field: "sender_type", 
     })
     senderType: SenderType;
        
 
     @BelongsTo(()=> UsersModel)
     user: UsersModel;
-
-    @BelongsTo(()=> AdminModel)
-    admin: AdminModel;
 }
