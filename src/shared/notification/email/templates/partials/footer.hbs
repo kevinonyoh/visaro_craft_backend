@@ -1,8 +1,10 @@
- </div>
-
- <!-- Add these inside your <head> section if your template includes one -->
-<meta name="color-scheme" content="light only" />
-<meta name="supported-color-schemes" content="light only" />
+</td>
+        </tr>
+      </table>
+      <!-- Add these inside your <head> section if your template includes one -->
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<meta name="x-apple-disable-message-reformatting">
 
 <!-- Footer -->
 <table
@@ -11,16 +13,20 @@
   cellpadding="0"
   cellspacing="0"
   bgcolor="#0e105b"
-  style="background-color:#0e105b !important; color:#ffffff !important;
+  style="background:#0e105b !important; color:#ffffff !important;
          font-family:'Raleway', Arial, sans-serif;
-         -webkit-text-size-adjust:none; -ms-text-size-adjust:none;"
+         -webkit-text-size-adjust:none; -ms-text-size-adjust:none;
+         mso-table-lspace:0pt; mso-table-rspace:0pt;"
 >
   <tr>
     <td
       align="center"
+      bgcolor="#0e105b"
       style="padding:40px 16px;
-             background-color:#0e105b !important;
-             color:#ffffff !important;"
+             background:#0e105b !important;
+             color:#ffffff !important;
+             mso-line-height-rule:exactly;
+             line-height:1.8;"
     >
       <!-- Inner container -->
       <table
@@ -28,22 +34,26 @@
         width="100%"
         cellpadding="0"
         cellspacing="0"
-        style="max-width:700px; width:100%; background-color:#0e105b !important;"
+        bgcolor="#0e105b"
+        style="background:#0e105b !important; max-width:700px; width:100%;
+               mso-table-lspace:0pt; mso-table-rspace:0pt;"
       >
         <tr>
           <td
-            style="font-size:14px; line-height:1.8; color:#ffffff !important; background-color:#0e105b !important;"
+            bgcolor="#0e105b"
+            style="font-size:14px; line-height:1.8; color:#ffffff !important;
+                   background:#0e105b !important; mso-line-height-rule:exactly;"
           >
-            <p style="text-align:center; margin:0;">©2025 All Rights Reserved</p>
+            <p style="text-align:center; margin:0; color:#ffffff !important;">©2025 All Rights Reserved</p>
 
             <div
               style="border-bottom:2px solid #ffffff !important;
                      width:65%; margin:20px auto;"
             ></div>
 
-            <p style="margin:0 0 12px 0;">
+            <p style="margin:0 0 12px 0; color:#ffffff !important;">
               This email was sent to you by
-              <strong>VisaroCraft Technology LLC</strong>. We operate across
+              <strong style="color:#ffffff !important;">VisaroCraft Technology LLC</strong>. We operate across
               multiple jurisdictions to provide premium U.S. immigration
               petition and consultation services. Please refer to our
               <a
@@ -52,13 +62,13 @@
               >Terms and Conditions</a>.
             </p>
 
-            <p style="margin:0 0 12px 0;">
+            <p style="margin:0 0 12px 0; color:#ffffff !important;">
               VisaroCraft Technology LLC is a company duly registered in the
               State of Wyoming, United States. We specialize in the preparation
               of EB-1A, EB-2 NIW, and O-1 visa petitions.
             </p>
 
-            <p style="margin:0;">
+            <p style="margin:0; color:#ffffff !important;">
               Each service engagement is governed by applicable laws, and
               VisaroCraft remains fully responsible for services rendered.
             </p>
@@ -69,39 +79,66 @@
   </tr>
 
   <!-- Social Section -->
-  <tr>
-    <td
-      align="center"
+<tr>
+  <td
+    align="center"
+    bgcolor="#d84a05"
+    style="background-color:#d84a05 !important;
+           padding:20px 16px;
+           color:#ffffff !important;
+           font-weight:600;
+           text-align:center;
+           -webkit-text-size-adjust:none;
+           -ms-text-size-adjust:none;
+           mso-table-lspace:0pt; mso-table-rspace:0pt;
+           mso-line-height-rule:exactly;"
+  >
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
       bgcolor="#d84a05"
-      style="background-color:#d84a05 !important;
-             padding:20px 16px;
-             color:#ffffff !important;
-             font-weight:600;
-             text-align:center;
-             -webkit-text-size-adjust:none;
-             -ms-text-size-adjust:none;"
+      style="background:#d84a05 !important; max-width:700px; margin:0 auto;"
     >
-      <p style="margin:0; line-height:1.6;">
-        Follow us on
-        <a
-          href="https://www.facebook.com/Visarocraft/"
-          target="_blank"
-          style="color:#ffffff !important;
-                 text-decoration:underline;
-                 font-weight:600;
-                 margin-left:4px;"
+      <tr>
+        <td
+          align="center"
+          style="color:#ffffff !important; background:#d84a05 !important; text-align:center;"
         >
-          Facebook
-        </a>
-      </p>
+          <p style="margin:0; line-height:1.6; color:#ffffff !important; text-align:center;">
+            Follow us on
+            <a
+              href="https://www.facebook.com/Visarocraft/"
+              target="_blank"
+              style="color:#ffffff !important;
+                     text-decoration:underline !important;
+                     font-weight:600;
+                     margin-left:4px;"
+            >
+              Facebook
+            </a>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+
+<style>
+  /* iOS-specific fixes for footer */
+  @media only screen and (max-width: 620px) {
+    table[class="footer-table"], 
+    td[class="footer-cell"] {
+      background-color: #0e105b !important;
+    }
+  }
+</style>
+
     </td>
   </tr>
 </table>
 
-{{! 
-<a href="https://twitter.com" style="color:white; margin:0 10px; text-decoration:underline;">Twitter</a>
-<a href="https://instagram.com" style="color:white; margin:0 10px; text-decoration:underline;">Instagram</a>
-<a href="https://linkedin.com" style="color:white; margin:0 10px; text-decoration:underline;">LinkedIn</a> 
-}}
 </body>
 </html>
