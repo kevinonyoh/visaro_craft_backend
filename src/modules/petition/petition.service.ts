@@ -296,6 +296,8 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
 
    const weekPetitionStage = await this.petitionStageRepository.update({weekNumber, petitionId: id}, {status: "IN_PROGRESS"}, transaction);
 
+   if(weekNumber === 5) await this.petitonRepository.update({id}, {status: "in_progress"}, transaction);
+
   const nextWeek = weekNumber+1;
 
   if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: null}, transaction);
