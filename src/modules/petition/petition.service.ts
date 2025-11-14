@@ -266,6 +266,8 @@ async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transactio
 
   if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: now}, transaction);
 
+  if(weekNumber === 5) await this.petitonRepository.update({id}, {status: "completed"}, transaction);
+
   const includeOption = {
     include: [
        {
@@ -330,7 +332,11 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
 
     if(weekNumber === 3) await this.emailService.weekThreeCompleted(payload);
 
-    if(weekNumber === 4) await this.emailService.weekFourCompleted(payload);
+    if(weekNumber === 4){
+      await this.emailService.weekFourCompleted(payload);
+
+      await this.emailService.weekFourSecondMail({email: payload.email, firstName: payload.firstName});
+    } 
 
     if(weekNumber === 5) await this.emailService.weekFiveCompleted(payload);
   }

@@ -43,12 +43,6 @@ export class EmailVerifyDto{
     otp: string;
 }
 
-export class AgentQueryDto{
-    @IsString()
-    @IsOptional()
-    agentId?: string;
-}
-
 
 export class ForgetPasswordDto{
 

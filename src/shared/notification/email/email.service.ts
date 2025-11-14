@@ -355,6 +355,39 @@ export class EmailService {
 
     }
 
+
+    async weekFourSecondMail(data: {email: string, firstName: string}){
+      
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Complete Your Last Payment to Finalize Your Petition`,
+        template: './layouts/weekFourSecondMail',
+        context: {
+          ...data,
+          title: `Your Last Payment to Finalize Your Petition`,
+          main: 'You are almost there!',
+          subtitle: 'Another milestone accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+
+    }
+
+    
     async weekFiveCompleted(data: {email: string, firstName: string, weekNumber: number}){
 
       await this.mailerService.sendMail({
@@ -418,5 +451,6 @@ export class EmailService {
 
     
     }
+
 
 }

@@ -14,17 +14,13 @@ export class PetitionCronService {
   ) {}
 
  
-  // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
- 
-  @Cron('*/8 * * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handlePetitionTracking() {
     this.logger.debug("Running daily petition stage tracker...");
 
     const now = new Date();
     const sevenDaysAgo = new Date();
-    // sevenDaysAgo.setDate(now.getDate() - 7);
-
-    sevenDaysAgo.setMinutes(now.getMinutes() - 10);
+    sevenDaysAgo.setDate(now.getDate() - 7);
     
     const pendingStages = await this.petitionStageRepository.findAll({status: "PENDING", pendingSince: { [Op.lte]: sevenDaysAgo }});
 

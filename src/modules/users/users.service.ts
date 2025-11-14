@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AgentQueryDto, CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
+import { CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { Transaction } from 'sequelize';
@@ -27,11 +27,57 @@ export class UsersService {
     @Inject(forwardRef(() => AgentService))
     private readonly agentService: AgentService,
     ){}
-  
-   async create(agent: AgentQueryDto, data: CreateUserDto, transation: Transaction) {
-     const { password, email, firstName, ...rest} = data;
 
-     const { agentId } = agent;
+
+    async createUserByAgent(username: string, data: CreateUserDto, transaction: Transaction){
+      const { password, email, firstName, ...rest} = data;
+
+      const agent = await this.agentService.findByUserName(username);
+
+      if(!agent) throw new BadRequestException("Invalid reference link");
+
+      const user = await this.usersRepository.findOne({email});
+
+     if(user) throw new BadRequestException("email already exist");
+
+     const salt = await bcrypt.genSalt();
+
+     const hashPassword = await bcrypt.hash(password, salt);
+     
+     const payload = {
+      ...rest,
+      firstName,
+      password: hashPassword,
+      email,
+      agentId: agent["id"]
+     }
+
+     const val = await this.usersRepository.create(payload, transaction);
+
+     const userData = val.toJSON();
+
+    await this.emailService.signUp({email, firstName});
+
+    await this.agentService.createAgentReward(userData.id, transaction);
+
+    const agentPayload = {
+      email: agent["email"],
+      firstName: agent["firstName"],
+      fullName: `${firstName} ${data.lastName}`,
+      userEmail: email
+    }
+
+    await this.emailService.agentReferral(agentPayload);
+    
+    const description = `New User: ${firstName} ${rest["lastName"]}`
+ 
+    await this.auditTrailService.create({description}, transaction);
+
+    return userData;
+  }
+  
+   async create(data: CreateUserDto, transation: Transaction) {
+     const { password, email, firstName, ...rest} = data;
      
      const user = await this.usersRepository.findOne({email});
 
@@ -45,8 +91,7 @@ export class UsersService {
       ...rest,
       firstName,
       password: hashPassword,
-      email,
-      agentId
+      email
      }
 
      const val = await this.usersRepository.create(payload, transation);
@@ -54,27 +99,6 @@ export class UsersService {
      const userData = val.toJSON();
 
     await this.emailService.signUp({email, firstName});
-
-    if(agentId){ 
-     
-      const agentData = await this.agentService.findById(agentId);
-
-      if(!agentData) throw new BadRequestException("Invalid reference link");
-
-      await this.agentService.createAgentReward(userData.id, transation);
-
-      const agentPayload = {
-        email: agentData["email"],
-        firstName: agentData["firstName"],
-        fullName: `${firstName} ${data.lastName}`,
-        userEmail: email
-      }
-
-      await this.emailService.agentReferral(agentPayload);
-    }
-    const description = `New User: ${firstName} ${rest["lastName"]}`
- 
-    await this.auditTrailService.create({description}, transation);
 
     return userData;
   }

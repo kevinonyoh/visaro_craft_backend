@@ -156,6 +156,9 @@ async findById(id: string){
   return await this.agentsRepository.findOne({id})
 }
 
+async findByUserName(username: string){
+  return await this.agentsRepository.findOne({username});
+}
 
 async findAgentUsers(agent: IAgent){
   const includeOption = {

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Put, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AgentQueryDto, CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
+import {CreateUserDto, EmailVerifyDto, ForgetPasswordDto, ResetForgetPasswordDto, SendOtpDto, UploadCVDto, changePasswordDto } from './dto/create-user.dto';
 import { TransactionParam } from 'src/common/decorators/transaction-param.decorator';
 import { Transaction } from 'sequelize';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
@@ -19,11 +19,19 @@ export class UsersController {
     ) {}
 
   @Public()
+  @Post("agent/create/:username")
+  @HttpCode(201)
+  @ResponseMessage("new courses created successfully")
+  async createUserByAgent(@Param("username") username: string, @Body() body: CreateUserDto, @TransactionParam() transaction: Transaction) {
+    return await  this.usersService.createUserByAgent(username, body, transaction);
+  }
+
+  @Public()
   @Post("create")
   @HttpCode(201)
   @ResponseMessage("new courses created successfully")
-  async create(@Query() agent: AgentQueryDto, @Body() body: CreateUserDto, @TransactionParam() transaction: Transaction) {
-    return await  this.usersService.create(agent, body, transaction);
+  async create(@Body() body: CreateUserDto, @TransactionParam() transaction: Transaction) {
+    return await  this.usersService.create(body, transaction);
   }
 
 
