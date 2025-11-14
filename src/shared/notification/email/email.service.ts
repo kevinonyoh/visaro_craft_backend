@@ -235,6 +235,36 @@ export class EmailService {
       });      
     }
 
+    async finalPayment(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: 'Your Final Payment Is Confirmed – Petition Moving to Conclusion Phase',
+        template: './layouts/finalPayment',
+        context: {
+          ...data,
+          title: 'Your Petition Has Entered the Final Completion & Submission Phase',
+          main: 'Payment Confirmed 🎉',
+          subtitle:
+            'Congratulations! Your Petition Is Entering the Final Submission Process',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:paymentImage',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'paymentImage',
+          },
+        ],
+      });      
+    }
+
     async weekOneCompleted(data: {email: string, firstName: string, weekNumber: number}){
       await this.mailerService.sendMail({
         to: data.email,

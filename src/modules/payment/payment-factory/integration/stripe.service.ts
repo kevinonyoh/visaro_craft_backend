@@ -1,6 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import Stripe from "stripe";
-import { IPaymentIntent, IStatus } from "../../interface/payment.interface";
+import { IPaymentIntent, IPaymentType, IStatus } from "../../interface/payment.interface";
 import { Request } from "express";
 import { Transaction } from "sequelize";
 import { PaymentRepository } from "../../repositories/payment.repository";
@@ -46,25 +46,7 @@ export class StripeService{
         
              const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
 
-             const includeOption = {
-              include: [
-                 {
-                   model: UsersModel,
-                   attributes: ['firstName', 'lastName', 'email', 'id']
-                 },
-                
-               ]
-              }
-
-            const user = await this.paymentRepository.findOne({id: payment["id"]}, <unknown>includeOption);
-
-             await this.emailService.paymentConfirmation({email: user["user"].email, firstName: user["user"].firstName});
-
-             const { userId, amount,  paymentOptionName} = payment.toJSON();
-
-             const rewardAmount = (amount/100)/10;
-
-             await this.agentService.updateAgentReward(userId, rewardAmount, paymentOptionName);
+             await this.processAgentReward(payment);
 
             this.logger.log(
               '========================================= Checkout session completed! Payment successful =========================================',
@@ -116,12 +98,14 @@ export class StripeService{
         throw new BadRequestException('Payment record not found');
       }
   
-      // Determine new status based on Stripe session
       let newStatus: IStatus;
   
       switch (session.payment_status) {
         case 'paid':
           newStatus = IStatus.SUCCESSFUL;
+
+          await this.processAgentReward(payment);
+          
           break;
         case 'unpaid':
           newStatus = IStatus.FAILED;
@@ -134,6 +118,32 @@ export class StripeService{
   
      return await this.paymentRepository.update({ checkoutSessionId: sessionId }, {status: newStatus}, transaction);
 
+    }
+
+
+    private async processAgentReward(payment: any){
+      const includeOption = {
+        include: [
+           {
+             model: UsersModel,
+             attributes: ['firstName', 'lastName', 'email', 'id']
+           },
+          
+         ]
+        }
+
+      const user = await this.paymentRepository.findOne({id: payment["id"]}, <unknown>includeOption);
+
+       if(user.paymentOptionName === IPaymentType.PETITION_PREPARATION) await this.emailService.paymentConfirmation({email: user["user"].email, firstName: user["user"].firstName});
+
+       if(user.paymentOptionName === IPaymentType.REVIEW_PETITION) await this.emailService.finalPayment({email: user["user"].email, firstName: user["user"].firstName})
+
+
+       const { userId, amount,  paymentOptionName} = payment.toJSON();
+
+       const rewardAmount = (amount/100)/10;
+
+       await this.agentService.updateAgentReward(userId, rewardAmount, paymentOptionName);
     }
 }
 
