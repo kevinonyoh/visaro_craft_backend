@@ -83,7 +83,7 @@ export class UsersService {
     await this.auditTrailService.create({description}, transaction);
 
     const notification: INotification = {
-      agentId: user.id,
+      agentId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
       message: `welcome to visarocraft ${firstName}`
@@ -120,7 +120,7 @@ export class UsersService {
     await this.emailService.signUp({email, firstName});
 
     const notification: INotification = {
-      agentId: user.id,
+      agentId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
       message: `welcome to visarocraft ${firstName}`
