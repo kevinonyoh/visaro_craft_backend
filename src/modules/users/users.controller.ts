@@ -99,7 +99,7 @@ export class UsersController {
   @HttpCode(200)
   @ResponseMessage("user notification")
   async agentNotification(@User() user:IUser){
-    return await this.auditTrailService.findAgentNotification(user.id);
+    return await this.auditTrailService.findUserNotification(user.id);
   }
 
 }

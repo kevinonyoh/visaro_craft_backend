@@ -10,7 +10,7 @@ import { IFindPayment, IPaymentType } from '../payment/interface/payment.interfa
 import { PaymentModel } from '../payment/models/payment.model';
 import { UsersModel } from '../users/models/users.model';
 import { PetitionModel } from './model/petition.model';
-import { IPetitionStatus, IPetitionTimeline } from './interface/petition.interface';
+import { IPetitionStatus, IPetitionTimeline, IPetitionType, emailPetitionType } from './interface/petition.interface';
 import { PetitionStageRepository } from './repositories/Petition-stage.repository';
 import { PetitionStageModel } from './model/petition-stage.model';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
@@ -98,9 +98,9 @@ export class PetitionService {
   await this.auditTrailService.createNotification(notification, transaction);
 
 
-    if(petitionStatus === IPetitionStatus.APPROVED) await this.emailService.qualificationApproved({email: user["user"].email, firstName: user["user"].firstName})
+    if(petitionStatus === IPetitionStatus.APPROVED) await this.emailService.qualificationApproved({email: user["user"].email, firstName: user["user"].firstName, petitionType: emailPetitionType[user.petitionType]})
 
-    if(petitionStatus === IPetitionStatus.DECLINED) await this.emailService.disQualification({email: user["user"].email, firstName: user["user"].firstName});
+    if(petitionStatus === IPetitionStatus.DECLINED) await this.emailService.disQualification({email: user["user"].email, firstName: user["user"].firstName, petitionType: emailPetitionType[user.petitionType]});
 
     return statusData;
   }
@@ -283,10 +283,20 @@ async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transactio
   const payload = {
       email: user["user"].email,
       firstName: user["user"].firstName,
-      weekNumber
+      weekNumber,
+      petitionType: emailPetitionType[user.petitionType]
   }
 
   await this.weekMailSender(payload);
+
+  const notification: INotification = {
+    userId: user["user"].id,
+    recipientType: "USER",
+    title: `Your week ${weekNumber} mark completed`,
+    message: `Congratulation, Your week ${weekNumber} was mark successful`
+  }
+
+  await this.auditTrailService.createNotification(notification, transaction);
 
   return weekPetitionStage;
 }
@@ -301,6 +311,28 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
   const nextWeek = weekNumber+1;
 
   if(nextWeek <= 5) await this.petitionStageRepository.update({weekNumber: nextWeek, petitionId: id}, {pendingSince: null}, transaction);
+
+  const includeOption = {
+    include: [
+       {
+         model: UsersModel,
+         attributes: ['firstName', 'lastName', 'email', 'id']
+       },
+      
+     ]
+    }
+
+  const user = await this.petitonRepository.findOne({id: weekPetitionStage["petitionId"] }, <unknown>includeOption);
+
+
+  const notification: INotification = {
+    userId: user["user"].id,
+    recipientType: "USER",
+    title: `Your week ${weekNumber} was unmark completed`,
+    message: `Your week ${weekNumber} was unmark. we still need to work on your week ${weekNumber}`
+  }
+
+  await this.auditTrailService.createNotification(notification, transaction);
 
   return weekPetitionStage;
 }
@@ -319,14 +351,17 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
   }
 
 
-  async weekMailSender(data: {weekNumber: number, email: string, firstName: string}){
-    const {weekNumber, email, firstName} = data;
+  async weekMailSender(data: {weekNumber: number, email: string, firstName: string, petitionType: string}){
+    const {weekNumber, email, firstName, petitionType} = data;
 
     const payload = {
       weekNumber, 
       email,
-      firstName
+      firstName,
+      petitionType
     }
+
+    
 
     if(weekNumber === 1) await this.emailService.weekOneCompleted(payload);
 

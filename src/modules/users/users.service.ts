@@ -60,6 +60,15 @@ export class UsersService {
 
     await this.agentService.createAgentReward(userData.id, transaction);
 
+    const agentNotification: INotification = {
+      agentId: agent.id,
+      recipientType: "AGENT",
+      title: "new user created",
+      message: `a new user has successfully create an account with your referral link`
+    }
+    
+    await this.auditTrailService.createNotification(agentNotification, transaction);
+
     const agentPayload = {
       email: agent["email"],
       firstName: agent["firstName"],
@@ -72,6 +81,16 @@ export class UsersService {
     const description = `New User: ${firstName} ${rest["lastName"]}`
  
     await this.auditTrailService.create({description}, transaction);
+
+    const notification: INotification = {
+      agentId: user.id,
+      recipientType: "USER",
+      title: "welcome to visarocraft",
+      message: `welcome to visarocraft ${firstName}`
+    }
+
+    
+    await this.auditTrailService.createNotification(notification, transaction);
 
     return userData;
   }
@@ -99,6 +118,15 @@ export class UsersService {
      const userData = val.toJSON();
 
     await this.emailService.signUp({email, firstName});
+
+    const notification: INotification = {
+      agentId: user.id,
+      recipientType: "USER",
+      title: "welcome to visarocraft",
+      message: `welcome to visarocraft ${firstName}`
+    }
+    
+    await this.auditTrailService.createNotification(notification, transation);
 
     return userData;
   }

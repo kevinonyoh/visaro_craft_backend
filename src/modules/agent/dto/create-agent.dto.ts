@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { IAgentTransactionStatus } from "../interfaces/agent.interface";
 
@@ -22,10 +22,12 @@ export class CreateAgentDto {
     @IsNotEmpty()
     lastName: string;
 
+    @Transform(({ value }) => value?.trim().toLowerCase())
     @IsEmail()
     @IsNotEmpty()
     email: string;
 
+    @Transform(({ value }) => value?.trim().toLowerCase())
     @IsString()
     @IsNotEmpty()
     username: string;

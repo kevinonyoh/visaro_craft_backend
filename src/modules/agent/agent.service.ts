@@ -77,6 +77,15 @@ export class AgentService {
 
    await this.emailService.AgentSignUp({email});
 
+   const notification: INotification = {
+    agentId: user.id,
+    recipientType: "AGENT",
+    title: "welcome to visarocraft",
+    message: `welcome to visarocraft, ${firstName}.`
+  }
+  
+  await this.auditTrailService.createNotification(notification, transation);
+
    return userData;
  }
 

@@ -8,6 +8,8 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from "@nes
 import { AgentService } from "src/modules/agent/agent.service";
 import { EmailService } from "src/shared/notification/email/email.service";
 import { UsersModel } from "src/modules/users/models/users.model";
+import { PetitionModel } from "src/modules/petition/model/petition.model";
+import { emailPetitionType } from "src/modules/petition/interface/petition.interface";
 
 
 @Injectable()
@@ -128,13 +130,16 @@ export class StripeService{
              model: UsersModel,
              attributes: ['firstName', 'lastName', 'email', 'id']
            },
+           {
+            model: PetitionModel
+           }
           
          ]
         }
 
       const user = await this.paymentRepository.findOne({id: payment["id"]}, <unknown>includeOption);
 
-       if(user.paymentOptionName === IPaymentType.PETITION_PREPARATION) await this.emailService.paymentConfirmation({email: user["user"].email, firstName: user["user"].firstName});
+       if(user.paymentOptionName === IPaymentType.PETITION_PREPARATION) await this.emailService.paymentConfirmation({email: user["user"].email, firstName: user["user"].firstName, petitionType: emailPetitionType[user["petition"].petitionType]});
 
        if(user.paymentOptionName === IPaymentType.REVIEW_PETITION) await this.emailService.finalPayment({email: user["user"].email, firstName: user["user"].firstName})
 

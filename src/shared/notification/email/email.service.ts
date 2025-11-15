@@ -5,16 +5,16 @@ import { Injectable } from "@nestjs/common";
 export class EmailService {
     constructor(private mailerService: MailerService) {}
 
-    async adminCreated(data: {email: string; password: string, role: string}) {
-        await this.mailerService.sendMail({
-          to: data.email,
-          subject: 'Welcome to SGT',
-          template: 'admin-created',
-          context: {
-            ...data
-          }
-        });
-      }
+    // async adminCreated(data: {email: string; password: string, role: string}) {
+    //     await this.mailerService.sendMail({
+    //       to: data.email,
+    //       subject: 'Welcome to SGT',
+    //       template: 'admin-created',
+    //       context: {
+    //         ...data
+    //       }
+    //     });
+    //   }
 
     // async signUp(data: {email: string, firstName: string}){
     //   await this.mailerService.sendMail({
@@ -141,17 +141,17 @@ export class EmailService {
       
     }
 
-    async qualificationApproved(data: {email: string, firstName: string}){
+    async qualificationApproved(data: {email: string, firstName: string, petitionType: string}){
       await this.mailerService.sendMail({
         to: data.email,
-        subject: '🎉 EB-1A Consultation Qualification Successful!',
+        subject: `${data.petitionType} Consultation Qualification Successful!`,
         template: './layouts/qualification-approved',
         context: {
           ...data,
-          title: 'EB-1A Consultation Qualification Successful!',
-          main: 'Congratulations, You Passed the EB-1A Consultation Stage 🎉',
+          title: `${data.petitionType} Consultation Qualification Successful!`,
+          main: `Congratulations, You Passed the ${data.petitionType} Consultation Stage 🎉`,
           subtitle:
-            'Your journey toward EB-1A approval officially begins — we’re excited to start building your petition strategy.',
+            `Your journey toward ${data.petitionType} approval officially begins — we’re excited to start building your petition strategy.`,
           text: 'Access Your Client Portal',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:celebrationImage',
@@ -173,17 +173,17 @@ export class EmailService {
     }
 
 
-    async disQualification(data: {email: string, firstName: string}){
+    async disQualification(data: {email: string, firstName: string, petitionType: string}){
       await this.mailerService.sendMail({
         to: data.email,
-        subject: 'EB-1A Consultation Result – Profile Strengthening Recommended',
+        subject: `${data.petitionType} Consultation Result – Profile Strengthening Recommended`,
         template: './layouts/qualification-not-approved',
         context: {
           ...data,
-          title: 'EB-1A Consultation Result',
+          title: `${data.petitionType} Consultation Result`,
           main: 'Profile Strengthening Recommended',
           subtitle:
-            'Your consultation review indicates further development is required before proceeding with your EB-1A petition.',
+            `Your consultation review indicates further development is required before proceeding with your ${data.petitionType} petition.`,
           text: 'View Recommendations',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:consultationImage',
@@ -205,17 +205,17 @@ export class EmailService {
     }
 
 
-    async paymentConfirmation(data: {email: string, firstName: string}){
+    async paymentConfirmation(data: {email: string, firstName: string, petitionType: string}){
       await this.mailerService.sendMail({
         to: data.email,
-        subject: 'Payment Confirmed – Your EB-1A Petition Process Has Begun',
+        subject: `Payment Confirmed – Your ${data.petitionType} Petition Process Has Begun`,
         template: './layouts/payment-confirmation',
         context: {
           ...data,
-          title: 'EB-1A Petition Activated',
+          title: `${data.petitionType} Petition Activated`,
           main: 'Payment Confirmed 🎉',
           subtitle:
-            'Your EB-1A petition preparation process is now officially activated. We’re ready to begin building your success story.',
+            `Your ${data.petitionType} petition preparation process is now officially activated. We’re ready to begin building your success story.`,
           text: 'View Next Steps',
           logoUrl: 'cid:logoImage',
           imageUrl: 'cid:paymentImage',
@@ -265,14 +265,14 @@ export class EmailService {
       });      
     }
 
-    async weekOneCompleted(data: {email: string, firstName: string, weekNumber: number}){
+    async weekOneCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
       await this.mailerService.sendMail({
         to: data.email,
-        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        subject: `Congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
         template: './layouts/weekOneCompleted',
         context: {
           ...data,
-          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          title: `congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
           main: 'Week one success!',
           subtitle: 'Milestone one accomplished!',
           text: 'View Next Steps',
@@ -294,15 +294,15 @@ export class EmailService {
       }); 
     }
 
-    async weekTwoCompleted(data: {email: string, firstName: string, weekNumber: number}){
+    async weekTwoCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
 
       await this.mailerService.sendMail({
         to: data.email,
-        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        subject: `Congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
         template: './layouts/weekTwoCompleted',
         context: {
           ...data,
-          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          title: `congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
           main: 'Week two success!',
           subtitle:  'Another milestone accomplished!',
           text: 'View Next Steps',
@@ -325,14 +325,14 @@ export class EmailService {
 
     }
 
-    async weekThreeCompleted(data: {email: string, firstName: string, weekNumber: number}){
+    async weekThreeCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
       await this.mailerService.sendMail({
         to: data.email,
-        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        subject: `Congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
         template: './layouts/weekThreeCompleted',
         context: {
           ...data,
-          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          title: `congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
           main: 'Week three success!',
           subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
@@ -354,15 +354,15 @@ export class EmailService {
       }); 
     }
 
-    async weekFourCompleted(data: {email: string, firstName: string, weekNumber: number}){
+    async weekFourCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
       
       await this.mailerService.sendMail({
         to: data.email,
-        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        subject: `Congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
         template: './layouts/weekFourCompleted',
         context: {
           ...data,
-          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          title: `congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
           main: 'Week four success!',
           subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
@@ -418,15 +418,15 @@ export class EmailService {
     }
 
     
-    async weekFiveCompleted(data: {email: string, firstName: string, weekNumber: number}){
+    async weekFiveCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
 
       await this.mailerService.sendMail({
         to: data.email,
-        subject: `Congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+        subject: `Congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
         template: './layouts/weekFiveCompleted',
         context: {
           ...data,
-          title: `congratulations! Week ${data.weekNumber} of Your EB-1A Petition Is Now Complete`,
+          title: `congratulations! Week ${data.weekNumber} of Your ${data.petitionType} Petition Is Now Complete`,
           main: 'Week five success!',
           subtitle: 'Another milestone accomplished!',
           text: 'View Next Steps',
