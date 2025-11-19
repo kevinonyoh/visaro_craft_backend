@@ -16,9 +16,7 @@ export class PetitionCronService {
   ) {}
 
  
-  // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  
-  @Cron('* * * * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handlePetitionTracking() {
     this.logger.debug("Running daily petition stage tracker...");
 
