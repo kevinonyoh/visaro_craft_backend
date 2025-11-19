@@ -16,6 +16,8 @@ import { AdminModule } from './modules/admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuditTrailModule } from './modules/audit-trail/audit-trail.module';
 import { ChatModule } from './modules/chat/chat.module';
+import * as crypto from 'crypto';
+
 
 @Module({
   imports: [ConfigsModule, DatabaseModule, JwtModule, EmailModule, CacheStoreModule, ScheduleModule.forRoot(), UsersModule, AuthModule, PaymentModule, PetitionModule, AgentModule, AdminModule, AuditTrailModule, ChatModule,],

@@ -3,6 +3,8 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { Op } from "sequelize";
 import { PetitionStageRepository } from "../repositories/Petition-stage.repository";
 import { PetitionRepository } from "../repositories/petition.repository";
+import * as crypto from 'crypto';
+
 
 @Injectable()
 export class PetitionCronService {
