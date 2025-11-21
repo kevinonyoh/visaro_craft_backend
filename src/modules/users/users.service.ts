@@ -83,7 +83,7 @@ export class UsersService {
     await this.auditTrailService.create({description}, transaction);
 
     const notification: INotification = {
-      agentId: userData.id,
+      userId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
       message: `welcome to visarocraft ${firstName}`
@@ -120,7 +120,7 @@ export class UsersService {
     await this.emailService.signUp({email, firstName});
 
     const notification: INotification = {
-      agentId: userData.id,
+      userId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
       message: `welcome to visarocraft ${firstName}`
@@ -265,7 +265,7 @@ export class UsersService {
    const userJson = await this.usersRepository.update({id: user.id}, {password: hashPassword}, transaction);
   
    const notification: INotification = {
-    agentId: user.id,
+    userId: user.id,
     recipientType: "USER",
     title: "change password",
     message: `you have successfully changed your password`
