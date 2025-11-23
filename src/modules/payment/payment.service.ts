@@ -65,7 +65,7 @@ export class PaymentService {
              quantity: 1,
            },
          ],
-         success_url: 'https://visaro-dashboard.vercel.app/success_board'
+         success_url: process.env.STRIPE_REDIRECT
        }
 
      const stripeData = await this.stripeService.testInitiatePayment(payload);
