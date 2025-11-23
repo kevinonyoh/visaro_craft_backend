@@ -38,7 +38,7 @@ import * as fs from 'fs';
             },
           },
           defaults: {
-            from: `"visarocraft" <${config.get('mailFrom')}>`,
+            from: `"Visarocraft" <${config.get('mailFrom')}>`,
           },
           template: {
             dir: join(__dirname, 'templates'),
