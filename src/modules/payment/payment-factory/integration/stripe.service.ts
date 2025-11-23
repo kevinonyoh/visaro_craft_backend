@@ -73,7 +73,7 @@ export class StripeService{
           case 'checkout.session.async_payment_succeeded': {
             const session = event.data.object as Stripe.Checkout.Session;
         
-            await this.paymentRepository.update({ status: IStatus.SUCCESSFUL },{ checkoutSessionId: session.id });
+            await this.paymentRepository.update({ checkoutSessionId: session.id }, { status: IStatus.SUCCESSFUL });
         
             this.logger.log(
               '========================================= Async checkout payment succeeded =========================================',
