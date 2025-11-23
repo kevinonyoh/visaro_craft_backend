@@ -60,7 +60,7 @@ export class PaymentService {
              price_data: {
                currency: 'usd',
                product_data: { name: paymentJson.name },
-               unit_amount: paymentJson.amount,
+               unit_amount: (paymentJson.amount * 100),
              },
              quantity: 1,
            },
@@ -101,7 +101,7 @@ export class PaymentService {
       const {amount} = data;
 
       const payload = {
-         amount: (amount * 100)
+         amount
       }
 
       return await this.paymentOptionsRepository.update({id}, payload, transaction);

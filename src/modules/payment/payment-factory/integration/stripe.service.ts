@@ -146,7 +146,7 @@ export class StripeService{
 
        const { userId, amount,  paymentOptionName} = payment.toJSON();
 
-       const rewardAmount = (amount/100)/10;
+       const rewardAmount = (amount)/10;
 
        await this.agentService.updateAgentReward(userId, rewardAmount, paymentOptionName);
     }
