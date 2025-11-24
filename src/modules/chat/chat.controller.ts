@@ -5,6 +5,7 @@ import { UpdateChatDto } from './dto/update-chat.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { IUser } from '../users/interfaces/user.interface';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
+import { IsAdmin } from 'src/common/decorators/is-admin.decorator';
 
 @Controller('chat')
 export class ChatController {
@@ -18,6 +19,7 @@ export class ChatController {
     return await this.chatService.fetchChat(user.id);
   }
 
+  @IsAdmin()
   @Get("admin/:userId")
   @HttpCode(200)
   @ResponseMessage("user chat")
