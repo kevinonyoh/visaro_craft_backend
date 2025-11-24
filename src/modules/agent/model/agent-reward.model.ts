@@ -31,7 +31,7 @@ export class AgentRewardsModel extends Model<AgentRewardsModel>{
     @Column(DataType.INTEGER)
     stage: number;
 
-    @Column(DataType.INTEGER)
+    @Column(DataType.DECIMAL(10, 2))
     rewardAmount: number;
     
     @BelongsTo(()=> UsersModel)

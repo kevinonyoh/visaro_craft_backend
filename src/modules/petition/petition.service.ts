@@ -16,7 +16,7 @@ import { PetitionStageModel } from './model/petition-stage.model';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { EmailService } from 'src/shared/notification/email/email.service';
 import { INotification } from '../audit-trail/interface/notification.interface';
-
+import * as helper from "../../common/utils/helper";
 
 @Injectable()
 export class PetitionService {
@@ -62,8 +62,8 @@ export class PetitionService {
     const notification: INotification = {
         userId: user.id,
         recipientType: "USER",
-        title: "petition created successfully",
-        message: `your ${petitionType} petition was created successfully`
+        title: "Petition Created Successfully ",
+        message: `${emailPetitionType[petitionType]} petition was successfully created`
     }
 
     await this.auditTrailService.createNotification(notification, transaction);
@@ -91,8 +91,8 @@ export class PetitionService {
     const notification: INotification = {
       userId: user["user"].id,
       recipientType: "USER",
-      title: "Next phase after consultation",
-      message: `your ${user["petitionType"]} petition was ${petitionStatus} after consultation`
+      title: "Consultation Outcome",
+      message: helper.petitionConsultationNotification(petitionStatus)
   }
 
   await this.auditTrailService.createNotification(notification, transaction);
@@ -237,8 +237,8 @@ async activatePetition(user: IUser, transaction:Transaction){
   const notification: INotification = {
     userId: user.id,
     recipientType: "USER",
-    title: "petition activation status",
-    message: `you have successfully activate your petition. we can now start working on your petition`
+    title: "Petition Activation Status",
+    message: `Thank you, your payment has been received and your petition preparation has been activated`
   }
 
   await this.auditTrailService.createNotification(notification, transaction);
@@ -292,8 +292,8 @@ async markPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transactio
   const notification: INotification = {
     userId: user["user"].id,
     recipientType: "USER",
-    title: `Your week ${weekNumber} mark completed`,
-    message: `Congratulation, Your week ${weekNumber} was mark successful`
+    title: `Week ${weekNumber} Completed`,
+    message: `Congratulations, Your week ${weekNumber} was marked completed`
   }
 
   await this.auditTrailService.createNotification(notification, transaction);

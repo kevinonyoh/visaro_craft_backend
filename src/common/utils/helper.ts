@@ -2,6 +2,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Op } from "sequelize";
 import { AdminModel } from "src/modules/admin/model/admin.model";
 import { AgentsModel } from "src/modules/agent/model/agent.model";
+import { IPetitionStatus } from "src/modules/petition/interface/petition.interface";
 import { UsersModel } from "src/modules/users/models/users.model";
 
 export const generateRandomPassword = () => {
@@ -65,3 +66,11 @@ export const getAccessToken = async (user: UsersModel | AdminModel | AgentsModel
 
   return await jwtService.signAsync({ id: user.id, email: user.email }, { secret });
 };
+
+
+export const petitionConsultationNotification = (petitionStatus: IPetitionStatus) => {
+  if(petitionStatus === IPetitionStatus.APPROVED) return "Good news! Your consultation went well and we are happy to work with you.";
+  
+  if(petitionStatus === IPetitionStatus.DECLINED) return "Unfortunately, your consultation did not go as expected. We appreciate your time, and we hope to assist you better in the future."
+
+}

@@ -215,7 +215,7 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
    if(dataJson.status === IAgentRewardStatus.PENDING && dataJson.stage === 0 && paymentOptionName === IPaymentType.PETITION_PREPARATION){ 
 
        const payload = {
-        rewardAmount,
+        rewardAmount: Number(rewardAmount),
         stage: 1,
         status: IAgentRewardStatus.IN_PROGRESS
        }
@@ -225,7 +225,7 @@ async updateAgentReward(userId: string, rewardAmount: number, paymentOptionName:
    } else if(dataJson.status === IAgentRewardStatus.IN_PROGRESS && dataJson.stage === 1 && paymentOptionName === IPaymentType.REVIEW_PETITION){
     
       const payload = {
-        rewardAmount: dataJson.rewardAmount+rewardAmount,
+        rewardAmount: Number(dataJson.rewardAmount)+Number(rewardAmount),
         stage: 2,
         status: IAgentRewardStatus.COMPLETED
       }
@@ -338,10 +338,12 @@ async updatePayoutRequestStatus(admin: IAdmin, id: string, data: UpdateStatusPay
     title: `payout status:  ${data["status"]}`, 
     message: `your payout status:  ${data["status"]}`
   }
+
+  const payout = await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
   
   await this.auditTrailService.createNotification(notification, transaction);
 
-  return await this.agentTransactionRepository.update({agentId, id}, payload, transaction);
+  return payout;
 }
 
 

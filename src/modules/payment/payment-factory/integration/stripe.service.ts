@@ -46,9 +46,9 @@ export class StripeService{
           case 'checkout.session.completed': {
             const session = event.data.object as Stripe.Checkout.Session;
         
-             const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
+           
 
-             await this.processAgentReward(payment);
+             await this.processAgentReward(session);
 
             this.logger.log(
               '========================================= Checkout session completed! Payment successful =========================================',
@@ -106,7 +106,7 @@ export class StripeService{
         case 'paid':
           newStatus = IStatus.SUCCESSFUL;
 
-          await this.processAgentReward(payment);
+          await this.processAgentReward(session);
           
           break;
         case 'unpaid':
@@ -123,7 +123,17 @@ export class StripeService{
     }
 
 
-    private async processAgentReward(payment: any){
+    private async processAgentReward(session: any){
+
+
+      const findPayment = await this.paymentRepository.findOne({checkoutSessionId: session.id});
+
+      if(IStatus.SUCCESSFUL === findPayment["status"]){
+        return findPayment;
+      } else {
+    
+      const payment = await this.paymentRepository.update({ checkoutSessionId: session.id}, { status: IStatus.SUCCESSFUL });
+
       const includeOption = {
         include: [
            {
@@ -149,6 +159,8 @@ export class StripeService{
        const rewardAmount = (amount)/10;
 
        await this.agentService.updateAgentReward(userId, rewardAmount, paymentOptionName);
+      
+    }
     }
 }
 

@@ -23,7 +23,7 @@ export class AgentTransactionModel extends Model<AgentTransactionModel>{
     agentId!: string;
 
     @AllowNull(false)
-    @Column(DataType.INTEGER)
+    @Column(DataType.DECIMAL(10, 2))
     amount: number;
 
     @AllowNull(false)
