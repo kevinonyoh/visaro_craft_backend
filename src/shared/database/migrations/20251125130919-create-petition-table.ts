@@ -1,7 +1,5 @@
 'use strict';
 
-import { IPetitionStatus, IPetitionTimeline, IPetitionType } from "src/modules/petition/interface/petition.interface";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -23,16 +21,26 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       petition_type: {
-        type: Sequelize.ENUM(...Object.values(IPetitionType)),
+        type: Sequelize.ENUM(
+          'EXTRAORDINARY_ABILITY',
+          'NATIONAL_INTEREST_WAIVER',
+          'EXTRAORDINARY_TALENT'
+        ),
         allowNull: false,
       },
       petition_status: {
-        type: Sequelize.ENUM(...Object.values(IPetitionStatus)),
+        type: Sequelize.ENUM('PENDING', 'DECLINED', 'APPROVED'),
         allowNull: false,
-        defaultValue: IPetitionStatus.PENDING,
+        defaultValue: 'PENDING',
       },
       petition_timeline: {
-        type: Sequelize.ENUM(...Object.values(IPetitionTimeline)),
+        type: Sequelize.ENUM(
+          'REVIEW',
+          'COVER_LETTER_AND_CRITERIA_MET',
+          'US_BENEFIT_AND_ENDEAVOR',
+          'FINAL_MERIT_AND_CONCLUSION',
+          'EXHIBITS_AND_FINAL_REVIEW'
+        ),
         allowNull: true,
       },
       is_petition_activated: {

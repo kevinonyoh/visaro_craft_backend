@@ -1,7 +1,5 @@
 'use strict';
 
-import { IPetitionTimeline } from "src/modules/petition/interface/petition.interface";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -12,7 +10,6 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
-      
       petition_id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -23,17 +20,20 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      
       week_number: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      
       stage: {
-        type: Sequelize.ENUM(...Object.values(IPetitionTimeline)),
+        type: Sequelize.ENUM(
+          'REVIEW',
+          'COVER_LETTER_AND_CRITERIA_MET',
+          'US_BENEFIT_AND_ENDEAVOR',
+          'FINAL_MERIT_AND_CONCLUSION',
+          'EXHIBITS_AND_FINAL_REVIEW'
+        ),
         allowNull: false,
       },
-
       status: {
         type: Sequelize.ENUM('PENDING', 'IN_PROGRESS', 'COMPLETE'),
         allowNull: false,
@@ -64,10 +64,6 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-      },
-      deleted_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
       },
     });
   },
