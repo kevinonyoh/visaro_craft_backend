@@ -25,7 +25,7 @@ module.exports = {
         allowNull: false,
       },
       sender_type: {
-        type: Sequelize.ENUM('USER', 'ADMIN'),
+        type: Sequelize.ENUM('user', 'admin'),
         allowNull: false,
       },
       created_at: {
