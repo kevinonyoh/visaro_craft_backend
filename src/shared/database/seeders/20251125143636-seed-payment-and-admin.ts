@@ -34,7 +34,9 @@ module.exports = {
     ], {});
 
     // Seed admins table
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    const password = process.env.ADMIN_PASSWORD || 'Admin@123';
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
 
     await queryInterface.bulkInsert('admins', [
       {
