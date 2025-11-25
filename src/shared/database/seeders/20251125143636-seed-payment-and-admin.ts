@@ -34,7 +34,7 @@ module.exports = {
     // ], {});
 
     // Seed admins table
-    const password = process.env.ADMIN_PASSWORD || 'Admin@123';
+    const password = process.env.ADMIN_PASSWORD;
     const hashedPassword = await bcrypt.hash(password, 10);
     
 

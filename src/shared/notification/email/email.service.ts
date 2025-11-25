@@ -185,19 +185,13 @@ export class EmailService {
           subtitle:
             `Your consultation review indicates further development is required before proceeding with your ${data.petitionType} petition.`,
           text: 'View Recommendations',
-          logoUrl: 'cid:logoImage',
-          imageUrl: 'cid:consultationImage',
+          logoUrl: 'cid:logoImage'
         },
         attachments: [
           {
             filename: 'logo.png',
             path: 'src/shared/notification/email/templates/images/logo.png',
             cid: 'logoImage',
-          },
-          {
-            filename: 'consultation.png',
-            path: 'src/shared/notification/email/templates/images/celerabate.png',
-            cid: 'consultationImage',
           },
         ],
       });
@@ -417,6 +411,38 @@ export class EmailService {
 
     }
 
+    async weekFourEb2(data: {email: string, firstName: string}){
+      await this.mailerService.sendMail({
+        to: data.email,
+        subject: `Congratulations! Week 4 of Your EB-2 NIW Petition Is Now Complete`,
+        template: './layouts/weekFourEb2',
+        context: {
+          ...data,
+          title: `congratulations! Week 4 of Your EB-2 NIW Petition Is Now Complete`,
+          main: 'Week Four Success!',
+          subtitle: 'Another Milestone Accomplished!',
+          text: 'View Next Steps',
+          logoUrl: 'cid:logoImage',
+          imageUrl: 'cid:happyGirl',
+        },
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: 'src/shared/notification/email/templates/images/logo.png',
+            cid: 'logoImage',
+          },
+          {
+            filename: 'payment.png',
+            path: 'src/shared/notification/email/templates/images/celerabate.png',
+            cid: 'happyGirl',
+          },
+        ],
+      }); 
+
+    }
+
+
+
     
     async weekFiveCompleted(data: {email: string, firstName: string, weekNumber: number, petitionType: string}){
 
@@ -448,6 +474,10 @@ export class EmailService {
       }); 
 
     }
+
+
+
+
     
 
     async emailVerification( data: { email: string, firstName: string, code: string; }) {

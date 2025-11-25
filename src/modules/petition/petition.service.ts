@@ -370,7 +370,16 @@ async unmarkPetitionTimeline(id: string, data: MarkPetitionTimelineDto, transact
     if(weekNumber === 3) await this.emailService.weekThreeCompleted(payload);
 
     if(weekNumber === 4){
-      await this.emailService.weekFourCompleted(payload);
+
+      if(petitionType === "EB-2 NIW") {
+
+         await this.emailService.weekFourEb2({email, firstName});
+
+      } else {
+     
+        await this.emailService.weekFourCompleted(payload);
+     
+      }
 
       await this.emailService.weekFourSecondMail({email: payload.email, firstName: payload.firstName});
     } 
