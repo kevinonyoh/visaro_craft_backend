@@ -86,7 +86,7 @@ export class UsersService {
       userId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
-      message: `welcome to visarocraft ${firstName}`
+      message: `welcome to visarocraft, ${firstName}`
     }
 
     
@@ -123,7 +123,7 @@ export class UsersService {
       userId: userData.id,
       recipientType: "USER",
       title: "welcome to visarocraft",
-      message: `welcome to visarocraft ${firstName}`
+      message: `welcome to visarocraft, ${firstName}`
     }
     
     await this.auditTrailService.createNotification(notification, transation);
