@@ -15,6 +15,7 @@ import { PetitionModel } from '../petition/model/petition.model';
 import { UsersModel } from '../users/models/users.model';
 import { AuditTrailService } from '../audit-trail/audit-trail.service';
 import { EmailService } from 'src/shared/notification/email/email.service';
+import * as helper from '../../common/utils/helper';
 
 @Injectable()
 export class PaymentService {
@@ -59,7 +60,10 @@ export class PaymentService {
            {
              price_data: {
                currency: 'usd',
-               product_data: { name: paymentJson.name },
+               product_data: {
+                   name: helper.paymentName(paymentJson.name),
+                   description: helper.paymentDescription(paymentJson.name)
+                  },
                unit_amount: (paymentJson.amount * 100),
              },
              quantity: 1,

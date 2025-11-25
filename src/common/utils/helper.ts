@@ -2,6 +2,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Op } from "sequelize";
 import { AdminModel } from "src/modules/admin/model/admin.model";
 import { AgentsModel } from "src/modules/agent/model/agent.model";
+import { IPaymentType } from "src/modules/payment/interface/payment.interface";
 import { IPetitionStatus } from "src/modules/petition/interface/petition.interface";
 import { UsersModel } from "src/modules/users/models/users.model";
 
@@ -74,3 +75,20 @@ export const petitionConsultationNotification = (petitionStatus: IPetitionStatus
   if(petitionStatus === IPetitionStatus.DECLINED) return "Unfortunately, your consultation did not go as expected. We appreciate your time, and we hope to assist you better in the future."
 
 }
+
+export const paymentName = (paymentType: IPaymentType) => {
+  if(paymentType === IPaymentType.CONSULTATION) return "Your Payment for booking of consultation session";
+
+  if(paymentType === IPaymentType.PETITION_PREPARATION) return "$4000 first payment for preparation of petition";
+
+  if(paymentType === IPaymentType.REVIEW_PETITION) return "$4000 Outstanding Second Tranche Payment"
+}
+
+
+export const paymentDescription = (paymentType: IPaymentType) => {
+  if (paymentType === IPaymentType.CONSULTATION) return "This payment covers your booking fee for the immigration consultation session. You will receive expert guidance, case review, and recommendations tailored to your petition type.";
+
+  if (paymentType === IPaymentType.PETITION_PREPARATION) return "This payment represents the initial $4,000 installment for the preparation of your immigration petition. It covers document review, drafting, evidence organization, and strategy planning.";
+
+  if (paymentType === IPaymentType.REVIEW_PETITION) return "This payment covers the outstanding $4,000 balance for the second tranche of your petition preparation service. It completes your total petition processing fee.";
+};
