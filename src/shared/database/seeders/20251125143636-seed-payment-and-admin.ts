@@ -6,32 +6,32 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
   async up(queryInterface, Sequelize) {
     // Seed payment_options table
-    await queryInterface.bulkInsert('payment_options', [
-      // {
-      //   id: uuidv4(),
-      //   name: 'CONSULTATION',
-      //   amount: 250,
-      //   currency: 'usd',
-      //   created_at: new Date(),
-      //   updated_at: new Date(),
-      // },
-      // {
-      //   id: uuidv4(),
-      //   name: 'PETITION_PREPARATION',
-      //   amount: 4000,
-      //   currency: 'usd',
-      //   created_at: new Date(),
-      //   updated_at: new Date(),
-      // },
-      // {
-      //   id: uuidv4(),
-      //   name: 'REVIEW_PETITION',
-      //   amount: 4000,
-      //   currency: 'usd',
-      //   created_at: new Date(),
-      //   updated_at: new Date(),
-      // },
-    ], {});
+    // await queryInterface.bulkInsert('payment_options', [
+    //   // {
+    //   //   id: uuidv4(),
+    //   //   name: 'CONSULTATION',
+    //   //   amount: 250,
+    //   //   currency: 'usd',
+    //   //   created_at: new Date(),
+    //   //   updated_at: new Date(),
+    //   // },
+    //   // {
+    //   //   id: uuidv4(),
+    //   //   name: 'PETITION_PREPARATION',
+    //   //   amount: 4000,
+    //   //   currency: 'usd',
+    //   //   created_at: new Date(),
+    //   //   updated_at: new Date(),
+    //   // },
+    //   // {
+    //   //   id: uuidv4(),
+    //   //   name: 'REVIEW_PETITION',
+    //   //   amount: 4000,
+    //   //   currency: 'usd',
+    //   //   created_at: new Date(),
+    //   //   updated_at: new Date(),
+    //   // },
+    // ], {});
 
     // Seed admins table
     const password = process.env.ADMIN_PASSWORD || 'Admin@123';
