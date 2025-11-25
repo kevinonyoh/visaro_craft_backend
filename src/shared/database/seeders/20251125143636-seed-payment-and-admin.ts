@@ -1,5 +1,6 @@
 'use strict';
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
     // Seed payment_options table
     await queryInterface.bulkInsert('payment_options', [
       {
-        id: Sequelize.UUIDV4(),
+        id: uuidv4(),
         name: 'CONSULTATION',
         amount: 250,
         currency: 'usd',
@@ -15,7 +16,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        id: Sequelize.UUIDV4(),
+        id: uuidv4(),
         name: 'PETITION_PREPARATION',
         amount: 4000,
         currency: 'usd',
@@ -23,7 +24,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        id: Sequelize.UUIDV4(),
+        id: uuidv4(),
         name: 'REVIEW_PETITION',
         amount: 4000,
         currency: 'usd',
@@ -37,7 +38,7 @@ module.exports = {
 
     await queryInterface.bulkInsert('admins', [
       {
-        id: Sequelize.UUIDV4(),
+        id: uuidv4(),
         first_name: 'Super',
         last_name: 'Admin',
         email: 'superadmin@example.com',
