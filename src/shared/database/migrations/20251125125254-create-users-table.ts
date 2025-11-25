@@ -54,7 +54,7 @@ module.exports = {
         allowNull: true,
       },
       agent_id: {
-        type: Sequelize.STRING(128),
+        type: Sequelize.UUID,  
         allowNull: true,
         references: {
           model: 'agents',
@@ -63,6 +63,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+
       profile_picture: {
         type: Sequelize.STRING,
         allowNull: true,
