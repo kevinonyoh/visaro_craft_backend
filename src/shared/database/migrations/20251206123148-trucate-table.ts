@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
   
-    const excludedTables = ['admins', 'payment_options', 'spatial_ref_sys'];
+    const excludedTables = ['payment_options', 'spatial_ref_sys'];
 
     const [tables] = await queryInterface.sequelize.query(`
       SELECT tablename
