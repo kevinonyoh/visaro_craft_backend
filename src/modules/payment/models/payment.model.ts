@@ -54,7 +54,7 @@ export class PaymentModel extends Model<PaymentModel>{
     checkoutSessionId?: string;
 
     @AllowNull(false)
-    @Column(DataType.STRING(255))
+    @Column(DataType.TEXT)
     paymentUrl?: string;
 
     @AllowNull(false)
