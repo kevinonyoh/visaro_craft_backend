@@ -10,6 +10,10 @@ export class CreatePaymentIntentDto{
    @IsString()
    @IsNotEmpty()
    paymentOptionsId: string;
+
+   @IsNumber()
+   @IsNotEmpty()
+   amount: number;
 }
 
 export class UpdatePaymentOptionDto{ 

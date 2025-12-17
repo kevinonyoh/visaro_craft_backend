@@ -35,7 +35,7 @@ export class PaymentService {
 
       if(!userData) throw new BadRequestException("user email does not exist");
 
-      const { paymentOptionsId } = data;
+      const { paymentOptionsId, amount } = data;
 
       const petition = await this.petitionService.findUserPetition(user);
 
@@ -47,9 +47,11 @@ export class PaymentService {
 
       if(paymentData) throw new BadRequestException(`You have made payment for this ${paymentData.paymentOptionName}`);
 
-      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId})
+      const payment = await this.paymentOptionsRepository.findOne({id: paymentOptionsId});
 
       if(!payment) throw new BadRequestException("payment type does not exist");
+
+      if(amount < payment["amount"]) throw new BadRequestException("The amount you're offering is less than the actual cost")
 
       const paymentJson = payment.toJSON();
 
@@ -64,7 +66,7 @@ export class PaymentService {
                    name: helper.paymentName(paymentJson.name),
                    description: helper.paymentDescription(paymentJson.name)
                   },
-               unit_amount: (paymentJson.amount * 100),
+               unit_amount: (amount * 100),
              },
              quantity: 1,
            },
@@ -79,7 +81,7 @@ export class PaymentService {
          email: user.email,
          checkoutSessionId: stripeData.id,
          paymentUrl: stripeData.url,
-         amount: paymentJson.amount,
+         amount,
          paymentOptionName: paymentJson.name,
          petitionId: petitionJson.id,
          paymentOptionsId
@@ -88,7 +90,7 @@ export class PaymentService {
 
       const description = `petition ${ paymentJson.name} fee by ${userData["firstName"]} ${userData["lastName"]}`
  
-      await this.auditTrailService.create({description, amount: paymentJson.amount }, transaction);
+      await this.auditTrailService.create({description, amount }, transaction);
      
        return await this.paymentRepository.create({...load}, transaction);
    }
